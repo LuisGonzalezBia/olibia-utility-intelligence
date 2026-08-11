@@ -9,8 +9,8 @@
 /build
 next-env.d.ts
 
-# credenciales — .npmrc lleva el token de GitHub Packages para @biaenergy/ui
-.npmrc
+# credenciales
+# (.npmrc SI se versiona: lee el token de ${NPM_GITHUB_TOKEN}, no lo contiene)
 .env
 .env.local
 .env*.local
