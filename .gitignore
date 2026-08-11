@@ -1,0 +1,27 @@
+# dependencias
+/node_modules
+/.pnp
+.pnp.js
+
+# build
+/.next/
+/out/
+/build
+next-env.d.ts
+
+# credenciales — .npmrc lleva el token de GitHub Packages para @biaenergy/ui
+.npmrc
+.env
+.env.local
+.env*.local
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+yarn-error.log*
+/coverage
+/.idea
+
+# artefacto de compilacion de TS
+tsconfig.tsbuildinfo

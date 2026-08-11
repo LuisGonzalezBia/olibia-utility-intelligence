@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@import '@biaenergy/ui/styles.css';
+
+/* Permite que Tailwind v4 escanee las clases que usa @biaenergy/ui — sin esto
+   los componentes del DS salen sin estilos. */
+@source '../../node_modules/@biaenergy/ui/dist';
+
+/* Variante dark por clase. Utility Intelligence es una superficie pública:
+   arranca en light y no expone toggle todavía, pero dejamos la variante
+   declarada para que los componentes del DS que usan `dark:` se comporten
+   igual que en Olibia el día que se agregue. */
+@custom-variant dark (&:where(.dark, .dark *));
