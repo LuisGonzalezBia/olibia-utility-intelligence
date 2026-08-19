@@ -1,24 +1,25 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { z } from 'zod';
+import { NextResponse, type NextRequest } from "next/server";
+import { z } from "zod";
+import { backendPost } from "@/backend/client";
 
 const ACTIVIDADES = [
-  'COMERCIALIZACION',
-  'GENERACION',
-  'DISTRIBUCION',
-  'TRANSPORTE',
-  'CENTRO_RECOLECCION'
+  "COMERCIALIZACION",
+  "GENERACION",
+  "DISTRIBUCION",
+  "TRANSPORTE",
+  "CENTRO_RECOLECCION",
 ] as const;
-const TIPOS_ORGANIZACION = ['PRIVADO', 'PUBLICO', 'MIXTO'] as const;
+const TIPOS_ORGANIZACION = ["PRIVADO", "PUBLICO", "MIXTO"] as const;
 const AREAS = [
-  'VENTAS_USUARIO_FINAL',
-  'COMPRAS_MAYORISTAS',
-  'VENTAS_MAYORISTAS',
-  'PLANEACION_FINANCIERA',
-  'REGULACION',
-  'OPERACION',
-  'RIESGOS',
-  'DIRECCION',
-  'OTRA'
+  "VENTAS_USUARIO_FINAL",
+  "COMPRAS_MAYORISTAS",
+  "VENTAS_MAYORISTAS",
+  "PLANEACION_FINANCIERA",
+  "REGULACION",
+  "OPERACION",
+  "RIESGOS",
+  "DIRECCION",
+  "OTRA",
 ] as const;
 
 // Espeja RegistroPayload. Se valida de nuevo acá aunque el cliente ya validó:
@@ -40,64 +41,51 @@ const registroSchema = z.object({
   enCatalogo: z.boolean(),
   tipoOrganizacion: z.enum(TIPOS_ORGANIZACION).nullable(),
   area: z.enum(AREAS).nullable(),
-  politicaVersion: z.string().min(1).max(16)
+  politicaVersion: z.string().min(1).max(16),
 });
 
-const BACKEND_PATH = '/ms-bia-growth-status/public-ms/utility-intelligence/registro';
-
 /**
- * POST /api/registro — crea la cuenta del padrón propio de Utility Intelligence.
+ * POST /api/registro — crea la cuenta en el padrón propio de Utility
+ * Intelligence. El backend hashea la contraseña con argon2id y manda el correo
+ * de verificación; acá no se guarda nada.
  *
- * El browser nunca habla directo con el backend: pasa por acá para que la URL
- * interna del gateway no quede expuesta en el cliente y para poder centralizar
- * el manejo de errores. La contraseña viaja en el body sobre TLS y la hashea el
- * backend con argon2id — nunca se loguea, ni acá ni allá.
+ * No abre sesión: la cuenta queda sin verificar hasta que la persona haga clic
+ * en el enlace del correo. Ese clic es lo que prueba que el correo es suyo.
  */
 export const POST = async (request: NextRequest) => {
   let payload: unknown;
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
+    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
   const parsed = registroSchema.safeParse(payload);
   if (!parsed.success) {
-    // Los detalles NO incluyen los valores enviados: uno de ellos es la
-    // contraseña y no queremos que aparezca reflejada en una respuesta.
+    // Se devuelven solo los NOMBRES de los campos inválidos, nunca los valores:
+    // uno de ellos es la contraseña y no debe volver reflejada en la respuesta.
     return NextResponse.json(
-      { error: 'invalid_registro', fields: Object.keys(parsed.error.flatten().fieldErrors) },
-      { status: 400 }
+      {
+        error: "invalid_registro",
+        fields: Object.keys(parsed.error.flatten().fieldErrors),
+      },
+      { status: 400 },
     );
   }
 
-  const backendUrl = process.env.BACKEND_URL;
-  if (backendUrl === undefined || backendUrl === '') {
-    console.error('[registro] falta BACKEND_URL');
-    return NextResponse.json({ error: 'backend_not_configured' }, { status: 500 });
-  }
-
   try {
-    const upstream = await fetch(`${backendUrl.replace(/\/+$/, '')}${BACKEND_PATH}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(parsed.data),
-      cache: 'no-store'
-    });
+    const result = await backendPost<{ id: number }>("/registro", parsed.data);
 
-    // 409 = correo ya registrado. Se propaga tal cual para que el formulario lo
-    // muestre sobre el campo de correo en vez del error genérico.
-    if (upstream.status === 409) {
-      return NextResponse.json({ error: 'email_in_use' }, { status: 409 });
+    if (result.status === 409) {
+      return NextResponse.json({ error: "email_in_use" }, { status: 409 });
     }
-    if (!upstream.ok) {
-      console.error('[registro] backend respondió', upstream.status);
-      return NextResponse.json({ error: 'backend_failed' }, { status: 502 });
+    if (!result.ok) {
+      console.error("[registro] el backend respondió", result.status);
+      return NextResponse.json({ error: "backend_failed" }, { status: 502 });
     }
-    const body: unknown = await upstream.json().catch(() => ({}));
-    return NextResponse.json(body);
+    return NextResponse.json(result.data ?? {}, { status: 201 });
   } catch (error) {
-    console.error('[registro] backend inalcanzable:', error);
-    return NextResponse.json({ error: 'backend_unreachable' }, { status: 502 });
+    console.error("[registro] backend inalcanzable:", error);
+    return NextResponse.json({ error: "backend_unreachable" }, { status: 502 });
   }
 };

@@ -1,6 +1,6 @@
-import { defaultLocale } from '@/i18n/config';
-import { getRegistroDict } from '@/modules/registro/dictionaries';
-import { RegistroForm } from '@/modules/registro/components/RegistroForm';
+import { defaultLocale } from "@/i18n/config";
+import { getRegistroDict } from "@/modules/registro/dictionaries";
+import { RegistroForm } from "@/modules/registro/components/RegistroForm";
 
 const RegistroPage = () => {
   const dict = getRegistroDict(defaultLocale);

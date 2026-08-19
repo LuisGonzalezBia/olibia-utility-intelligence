@@ -1,11 +1,12 @@
-import type { Locale } from '@/i18n/config';
-import { registroDictEs, type RegistroDictionary } from './es';
-import { registroDictEn } from './en';
+import type { Locale } from "@/i18n/config";
+import { registroDictEs, type RegistroDictionary } from "./es";
+import { registroDictEn } from "./en";
 
 const dicts: Record<Locale, RegistroDictionary> = {
   es: registroDictEs,
-  en: registroDictEn
+  en: registroDictEn,
 };
 
-export const getRegistroDict = (locale: Locale): RegistroDictionary => dicts[locale] ?? dicts.es;
+export const getRegistroDict = (locale: Locale): RegistroDictionary =>
+  dicts[locale] ?? dicts.es;
 export type { RegistroDictionary };
