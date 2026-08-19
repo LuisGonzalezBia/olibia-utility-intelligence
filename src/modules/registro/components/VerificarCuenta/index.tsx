@@ -58,10 +58,10 @@ export const VerificarCuenta = ({ token }: VerificarCuentaProps) => {
       <div className="flex flex-col gap-4">
         <h1 className="text-title-h6 text-text-strong-950">Tu cuenta quedó activa</h1>
         <p className="text-paragraph-sm text-text-sub-600">
-          Ya podés ver la competitividad tarifaria de tu mercado.
+          Ya puedes ver la información de tu mercado.
         </p>
         <FancyButton.Root asChild>
-          <Link href="/">Entrar</Link>
+          <Link href="/mercado">Ver mi mercado</Link>
         </FancyButton.Root>
       </div>
     );
@@ -72,7 +72,7 @@ export const VerificarCuenta = ({ token }: VerificarCuentaProps) => {
       <div className="flex flex-col gap-2">
         <h1 className="text-title-h6 text-text-strong-950">No pudimos conectarnos</h1>
         <p className="text-paragraph-sm text-text-sub-600">
-          Probá de nuevo en un momento abriendo el enlace del correo otra vez.
+          Prueba de nuevo en un momento abriendo el enlace del correo otra vez.
         </p>
       </div>
     );
@@ -83,7 +83,7 @@ export const VerificarCuenta = ({ token }: VerificarCuentaProps) => {
       <h1 className="text-title-h6 text-text-strong-950">Este enlace ya no sirve</h1>
       <p className="text-paragraph-sm text-text-sub-600">
         Los enlaces de activación duran 24 horas y se usan una sola vez. Si ya activaste tu cuenta,
-        ingresá con tu correo y contraseña.
+        ingresa con tu correo y contraseña.
       </p>
       <FancyButton.Root asChild>
         <Link href="/ingresar">Ingresar</Link>

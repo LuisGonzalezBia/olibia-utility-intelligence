@@ -25,3 +25,7 @@ yarn-error.log*
 
 # artefacto de compilacion de TS
 tsconfig.tsbuildinfo
+
+# generados por Next para agentes de IA
+AGENTS.md
+CLAUDE.md

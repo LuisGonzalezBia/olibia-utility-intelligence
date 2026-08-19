@@ -1,27 +1,27 @@
 export const registroDictEs = {
-  title: 'Creá tu cuenta',
-  subtitle: 'Olibia Utility Intelligence es para agentes del sector energético. Contanos quién sos para darte el ranking de tu mercado.',
+  title: 'Crea tu cuenta',
+  subtitle: 'Olibia Utility Intelligence es para agentes del sector energético. Cuéntanos quién eres para darte la información de tu mercado.',
   fields: {
     nombre: 'Nombre',
     apellido: 'Apellido',
     email: 'Correo corporativo',
-    emailHint: 'Usá el correo de tu empresa — con él validamos que representás al agente.',
+    emailHint: 'Usa el correo de tu empresa — con él validamos que representas al agente.',
     password: 'Contraseña',
     passwordHint: 'Mínimo 8 caracteres.',
     cargo: 'Cargo',
     telefono: 'Teléfono',
     telefonoOptional: 'Opcional',
     empresa: 'Empresa',
-    empresaPlaceholder: 'Buscá tu empresa…',
+    empresaPlaceholder: 'Busca tu empresa…',
     empresaNoListada: 'Mi empresa no está en la lista',
     empresaOtra: 'Nombre de tu empresa',
-    empresaOtraHint: 'No es agente del Mercado de Energía Mayorista — igual podés usar la plataforma.',
+    empresaOtraHint: 'No es agente del Mercado de Energía Mayorista — igual puedes usar la plataforma.',
     tipoOrganizacion: 'Tipo de organización',
     area: 'Área o equipo'
   },
   representaOrganizacion: {
-    label: '¿Te registrás en representación de una organización?',
-    hint: 'Si sos periodista, estudiante o consultor independiente, elegí "No".',
+    label: '¿Te registras en representación de una organización?',
+    hint: 'Si eres periodista, estudiante o consultor independiente, elige "No".',
     si: 'Sí',
     no: 'No'
   },
@@ -54,20 +54,20 @@ export const registroDictEs = {
     required: 'Necesitamos tu autorización para crear la cuenta.'
   },
   exito: {
-    titulo: 'Revisá tu correo',
+    titulo: 'Revisa tu correo',
     detalle: (email: string) =>
-      `Te enviamos un enlace a ${email} para confirmar tu cuenta. Apenas la confirmes, entrás al ranking de tu mercado.`
+      `Te enviamos un enlace a ${email} para confirmar tu cuenta. Apenas la confirmes, entras a la información de tu mercado.`
   },
   submit: 'Crear cuenta',
   submitting: 'Creando tu cuenta…',
-  alreadyHaveAccount: '¿Ya tenés cuenta?',
-  signIn: 'Ingresá',
+  alreadyHaveAccount: '¿Ya tienes cuenta?',
+  signIn: 'Ingresar',
   errors: {
     required: 'Este campo es obligatorio',
-    emailInvalid: 'Escribí un correo válido',
+    emailInvalid: 'Escribe un correo válido',
     passwordShort: 'La contraseña debe tener al menos 8 caracteres',
-    empresaRequired: 'Elegí tu empresa',
-    empresaOtraRequired: 'Escribí el nombre de tu empresa',
+    empresaRequired: 'Elige tu empresa',
+    empresaOtraRequired: 'Escribe el nombre de tu empresa',
     emailInUse: 'Ya existe una cuenta con este correo.',
     generic: 'No pudimos crear tu cuenta. Intentá de nuevo en un momento.'
   },

@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "node --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@biaenergy/ui": "0.11.2",

@@ -22,7 +22,7 @@ export const LoginForm = () => {
     setSinVerificar(false);
 
     if (!EMAIL_RE.test(email.trim()) || password === '') {
-      setError('Escribí tu correo y tu contraseña.');
+      setError('Escribe tu correo y tu contraseña.');
       return;
     }
 
@@ -48,10 +48,10 @@ export const LoginForm = () => {
       // `refresh` además de `push`: la sesión vive en una cookie httpOnly, así
       // que los Server Components tienen que volver a renderizar para verla —
       // solo con `push` se podría servir el árbol cacheado de "sin sesión".
-      router.push('/');
+      router.push('/mercado');
       router.refresh();
     } catch {
-      setError('No pudimos conectarnos. Probá de nuevo en un momento.');
+      setError('No pudimos conectarnos. Prueba de nuevo en un momento.');
     } finally {
       setIsSubmitting(false);
     }
@@ -69,7 +69,7 @@ export const LoginForm = () => {
         <Alert.Root status="warning" size="small">
           <Alert.Icon as={RiErrorWarningFill} />
           <span>
-            Todavía no activaste tu cuenta. Buscá el correo de confirmación que te enviamos.
+            Todavía no activaste tu cuenta. Busca el correo de confirmación que te enviamos.
           </span>
         </Alert.Root>
       )}
