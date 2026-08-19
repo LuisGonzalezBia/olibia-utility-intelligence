@@ -1,25 +1,25 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { z } from 'zod';
-import { backendPost } from '@/backend/client';
+import { NextResponse, type NextRequest } from "next/server";
+import { z } from "zod";
+import { backendPost } from "@/backend/client";
 
 const ACTIVIDADES = [
-  'COMERCIALIZACION',
-  'GENERACION',
-  'DISTRIBUCION',
-  'TRANSPORTE',
-  'CENTRO_RECOLECCION'
+  "COMERCIALIZACION",
+  "GENERACION",
+  "DISTRIBUCION",
+  "TRANSPORTE",
+  "CENTRO_RECOLECCION",
 ] as const;
-const TIPOS_ORGANIZACION = ['PRIVADO', 'PUBLICO', 'MIXTO'] as const;
+const TIPOS_ORGANIZACION = ["PRIVADO", "PUBLICO", "MIXTO"] as const;
 const AREAS = [
-  'VENTAS_USUARIO_FINAL',
-  'COMPRAS_MAYORISTAS',
-  'VENTAS_MAYORISTAS',
-  'PLANEACION_FINANCIERA',
-  'REGULACION',
-  'OPERACION',
-  'RIESGOS',
-  'DIRECCION',
-  'OTRA'
+  "VENTAS_USUARIO_FINAL",
+  "COMPRAS_MAYORISTAS",
+  "VENTAS_MAYORISTAS",
+  "PLANEACION_FINANCIERA",
+  "REGULACION",
+  "OPERACION",
+  "RIESGOS",
+  "DIRECCION",
+  "OTRA",
 ] as const;
 
 // Espeja RegistroPayload. Se valida de nuevo acá aunque el cliente ya validó:
@@ -41,7 +41,7 @@ const registroSchema = z.object({
   enCatalogo: z.boolean(),
   tipoOrganizacion: z.enum(TIPOS_ORGANIZACION).nullable(),
   area: z.enum(AREAS).nullable(),
-  politicaVersion: z.string().min(1).max(16)
+  politicaVersion: z.string().min(1).max(16),
 });
 
 /**
@@ -57,7 +57,7 @@ export const POST = async (request: NextRequest) => {
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
+    return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
 
   const parsed = registroSchema.safeParse(payload);
@@ -65,24 +65,27 @@ export const POST = async (request: NextRequest) => {
     // Se devuelven solo los NOMBRES de los campos inválidos, nunca los valores:
     // uno de ellos es la contraseña y no debe volver reflejada en la respuesta.
     return NextResponse.json(
-      { error: 'invalid_registro', fields: Object.keys(parsed.error.flatten().fieldErrors) },
-      { status: 400 }
+      {
+        error: "invalid_registro",
+        fields: Object.keys(parsed.error.flatten().fieldErrors),
+      },
+      { status: 400 },
     );
   }
 
   try {
-    const result = await backendPost<{ id: number }>('/registro', parsed.data);
+    const result = await backendPost<{ id: number }>("/registro", parsed.data);
 
     if (result.status === 409) {
-      return NextResponse.json({ error: 'email_in_use' }, { status: 409 });
+      return NextResponse.json({ error: "email_in_use" }, { status: 409 });
     }
     if (!result.ok) {
-      console.error('[registro] el backend respondió', result.status);
-      return NextResponse.json({ error: 'backend_failed' }, { status: 502 });
+      console.error("[registro] el backend respondió", result.status);
+      return NextResponse.json({ error: "backend_failed" }, { status: 502 });
     }
     return NextResponse.json(result.data ?? {}, { status: 201 });
   } catch (error) {
-    console.error('[registro] backend inalcanzable:', error);
-    return NextResponse.json({ error: 'backend_unreachable' }, { status: 502 });
+    console.error("[registro] backend inalcanzable:", error);
+    return NextResponse.json({ error: "backend_unreachable" }, { status: 502 });
   }
 };

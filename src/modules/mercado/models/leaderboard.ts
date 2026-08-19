@@ -1,4 +1,4 @@
-import type { AgenteRanking, FilaLeaderboard } from './ranking.interface';
+import type { AgenteRanking, FilaLeaderboard } from "./ranking.interface";
 
 /**
  * Prepara las filas para pintar: marca cuál es la del usuario y calcula el
@@ -11,19 +11,23 @@ import type { AgenteRanking, FilaLeaderboard } from './ranking.interface';
  */
 export const construirFilas = (
   items: readonly AgenteRanking[],
-  goldProvider: string | null | undefined
+  goldProvider: string | null | undefined,
 ): FilaLeaderboard[] => {
-  const mio = goldProvider == null ? undefined : items.find(i => i.provider === goldProvider);
-  const miCu = mio?.cu_ponderado;
+  const mio =
+    goldProvider == null
+      ? undefined
+      : items.find((i) => i.provider === goldProvider);
+  const miCu = mio?.cu;
 
-  return items.map(item => ({
+  return items.map((item) => ({
     ...item,
     esMio: mio !== undefined && item.provider === mio.provider,
     deltaPorcentual:
-      miCu === undefined || miCu === 0 ? null : ((item.cu_ponderado - miCu) / miCu) * 100
+      miCu === undefined || miCu === 0 ? null : ((item.cu - miCu) / miCu) * 100,
   }));
 };
 
 /** La fila del usuario, si compite en este mercado. */
-export const filaPropia = (filas: readonly FilaLeaderboard[]): FilaLeaderboard | undefined =>
-  filas.find(f => f.esMio);
+export const filaPropia = (
+  filas: readonly FilaLeaderboard[],
+): FilaLeaderboard | undefined => filas.find((f) => f.esMio);

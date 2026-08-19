@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Select } from '@biaenergy/ui';
+import { useRouter, useSearchParams } from "next/navigation";
+import { Select } from "@biaenergy/ui";
 
 interface SelectorMercadoProps {
   mercados: readonly string[];
@@ -19,7 +19,7 @@ export const SelectorMercado = ({ mercados, actual }: SelectorMercadoProps) => {
 
   const cambiar = (mercado: string) => {
     const next = new URLSearchParams(params.toString());
-    next.set('mercado', mercado);
+    next.set("mercado", mercado);
     router.push(`/mercado?${next.toString()}`);
   };
 
@@ -29,7 +29,7 @@ export const SelectorMercado = ({ mercados, actual }: SelectorMercadoProps) => {
         <Select.Value />
       </Select.Trigger>
       <Select.Content>
-        {mercados.map(m => (
+        {mercados.map((m) => (
           <Select.Item key={m} value={m}>
             {m}
           </Select.Item>

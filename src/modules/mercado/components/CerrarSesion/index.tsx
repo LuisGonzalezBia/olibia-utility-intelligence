@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { CompactButton } from '@biaenergy/ui';
-import { RiLogoutBoxRLine } from '@biaenergy/ui/icons';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { CompactButton } from "@biaenergy/ui";
+import { RiLogoutBoxRLine } from "@biaenergy/ui/icons";
 
 /**
  * Cerrar sesión. El endpoint existía desde el principio, pero no había forma de
@@ -16,12 +16,12 @@ export const CerrarSesion = () => {
   const salir = async () => {
     setSaliendo(true);
     try {
-      await fetch('/api/logout', { method: 'POST' });
+      await fetch("/api/logout", { method: "POST" });
     } finally {
       // `refresh` además de `push`: la sesión vive en una cookie httpOnly, así
       // que los Server Components tienen que volver a renderizar para dejar de
       // verla.
-      router.push('/');
+      router.push("/");
       router.refresh();
     }
   };

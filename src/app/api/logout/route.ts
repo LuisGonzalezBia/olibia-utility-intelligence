@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import { backendPost } from '@/backend/client';
-import { clearSessionCookie, getSessionToken } from '@/auth/session';
+import { NextResponse } from "next/server";
+import { backendPost } from "@/backend/client";
+import { clearSessionCookie, getSessionToken } from "@/auth/session";
 
 /**
  * POST /api/logout — cierra la sesión.
@@ -17,9 +17,12 @@ export const POST = async () => {
   if (token === undefined) return response;
 
   try {
-    await backendPost('/logout', {}, token);
+    await backendPost("/logout", {}, token);
   } catch (error) {
-    console.error('[logout] no se pudo invalidar la sesión en el backend:', error);
+    console.error(
+      "[logout] no se pudo invalidar la sesión en el backend:",
+      error,
+    );
   }
   return response;
 };

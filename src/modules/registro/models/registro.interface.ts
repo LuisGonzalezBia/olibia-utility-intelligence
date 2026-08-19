@@ -1,4 +1,4 @@
-import type { ActividadEmpresa } from './empresas';
+import type { ActividadEmpresa } from "./empresas";
 
 /**
  * Registro corporativo de Olibia Utility Intelligence.
@@ -13,7 +13,7 @@ import type { ActividadEmpresa } from './empresas';
  */
 
 /** Naturaleza jurídica de la organización. */
-export type TipoOrganizacion = 'PRIVADO' | 'PUBLICO' | 'MIXTO';
+export type TipoOrganizacion = "PRIVADO" | "PUBLICO" | "MIXTO";
 
 /**
  * Área funcional dentro del agente. Determina qué vistas tienen sentido por
@@ -21,15 +21,15 @@ export type TipoOrganizacion = 'PRIVADO' | 'PUBLICO' | 'MIXTO';
  * generación), ayuda a desambiguar cuál es "su" agente en el ranking.
  */
 export type AreaEquipo =
-  | 'VENTAS_USUARIO_FINAL'
-  | 'COMPRAS_MAYORISTAS'
-  | 'VENTAS_MAYORISTAS'
-  | 'PLANEACION_FINANCIERA'
-  | 'REGULACION'
-  | 'OPERACION'
-  | 'RIESGOS'
-  | 'DIRECCION'
-  | 'OTRA';
+  | "VENTAS_USUARIO_FINAL"
+  | "COMPRAS_MAYORISTAS"
+  | "VENTAS_MAYORISTAS"
+  | "PLANEACION_FINANCIERA"
+  | "REGULACION"
+  | "OPERACION"
+  | "RIESGOS"
+  | "DIRECCION"
+  | "OTRA";
 
 export interface RegistroFormValues {
   nombre: string;

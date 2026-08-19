@@ -1,4 +1,4 @@
-import { EMPRESA_GROUPS, type EmpresaGroup } from '../models/empresas';
+import { EMPRESA_GROUPS, type EmpresaGroup } from "../models/empresas";
 
 /**
  * Normaliza para búsqueda: minúsculas y sin tildes. Nadie escribe tildes en un
@@ -6,11 +6,7 @@ import { EMPRESA_GROUPS, type EmpresaGroup } from '../models/empresas';
  * "ELECTRIFICADORA").
  */
 export const normalize = (value: string): string =>
-  value
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .trim();
+  value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
 
 /**
  * Filtra empresas por nombre o cualquiera de sus códigos SIC, y las agrupa por
@@ -24,15 +20,17 @@ export const normalize = (value: string): string =>
 export const searchEmpresaGroups = (term: string): readonly EmpresaGroup[] => {
   const q = normalize(term);
   const base =
-    q === ''
+    q === ""
       ? EMPRESA_GROUPS
       : EMPRESA_GROUPS.filter(
-          g =>
+          (g) =>
             normalize(g.name).includes(q) ||
-            g.options.some(o => o.sic !== null && normalize(o.sic).includes(q))
+            g.options.some(
+              (o) => o.sic !== null && normalize(o.sic).includes(q),
+            ),
         );
   return [...base].sort((a, b) => {
     if (a.hasRanking !== b.hasRanking) return a.hasRanking ? -1 : 1;
-    return a.name.localeCompare(b.name, 'es');
+    return a.name.localeCompare(b.name, "es");
   });
 };

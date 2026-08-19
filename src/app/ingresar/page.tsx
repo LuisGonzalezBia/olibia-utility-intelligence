@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { LoginForm } from '@/modules/registro/components/LoginForm';
+import Link from "next/link";
+import { LoginForm } from "@/modules/registro/components/LoginForm";
 
 const IngresarPage = () => (
   <main className="flex min-h-dvh items-center justify-center px-4 py-10">
@@ -12,7 +12,7 @@ const IngresarPage = () => (
       </div>
       <LoginForm />
       <p className="text-paragraph-sm text-text-sub-600 mt-6 text-center">
-        ¿No tienes cuenta?{' '}
+        ¿No tienes cuenta?{" "}
         <Link href="/registro" className="text-text-strong-950 underline">
           Regístrate
         </Link>

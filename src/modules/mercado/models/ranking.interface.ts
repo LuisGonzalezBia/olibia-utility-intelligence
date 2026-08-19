@@ -3,18 +3,46 @@ export interface AgenteRanking {
   provider: string;
   /** "OR" | "Comercializador" — el OR es el operador de red del mercado. */
   tipo: string;
-  cu_simple: number;
-  cu_ponderado: number;
-  pos_simple: number;
-  pos_ponderado: number;
+  /** Costo Unitario en $/kWh, para el nivel de tensión y propiedad de la tabla. */
+  cu: number;
+  /** Posición dentro del mercado, 1 = más barato. */
+  pos: number;
+
+  // Los seis componentes CREG que suman el CU. Están para que la cifra sea
+  // auditable: contra qué componente se pierde, no solo que se va de quinto.
+  generacion: number;
+  comercializacion: number;
+  transporte: number;
+  distribucion: number;
+  perdidas: number;
+  restricciones: number;
 }
 
-/** Tabla completa de un mercado en el último mes publicado. */
+/**
+ * Una combinación de tarifa comparable. Nivel de tensión y propiedad de los
+ * equipos de medida definen QUÉ tarifa es: dos agentes solo se comparan dentro
+ * de la misma combinación.
+ */
+export interface ComboTarifa {
+  tension_level: number;
+  /** "OPERATOR" | "USER" | "SHARED" */
+  rate_type: string;
+  agentes: number;
+}
+
+/** Tabla de un mercado, para una combinación NT/propiedad, en el último mes. */
 export interface RankingMercado {
   /** "YYYY-MM" */
   mes: string;
   market: string;
   horizon: string;
+  tension_level: number;
+  rate_type: string;
+  /** De dónde salen las tarifas. Viaja con el dato y se muestra siempre. */
+  fuente: string;
+  /** Qué es exactamente esta cifra, en palabras. */
+  nota: string;
+  combos_disponibles: ComboTarifa[];
   items: AgenteRanking[];
 }
 

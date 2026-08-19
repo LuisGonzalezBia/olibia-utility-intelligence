@@ -1,16 +1,20 @@
-import { cookies } from 'next/headers';
-import type { NextResponse } from 'next/server';
+import { cookies } from "next/headers";
+import type { NextResponse } from "next/server";
 
 /**
  * Nombre de la cookie de sesión. httpOnly: el JavaScript del browser nunca la
  * puede leer, así que un XSS no se lleva la sesión. El token viaja del back al
  * server de Next.js y de ahí a la cookie — nunca pasa por el cliente.
  */
-export const SESSION_COOKIE = 'oui_session';
+export const SESSION_COOKIE = "oui_session";
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === "production";
 
-export const setSessionCookie = (response: NextResponse, token: string, expiresAt: string): void => {
+export const setSessionCookie = (
+  response: NextResponse,
+  token: string,
+  expiresAt: string,
+): void => {
   const expires = new Date(expiresAt);
   response.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,
@@ -19,19 +23,19 @@ export const setSessionCookie = (response: NextResponse, token: string, expiresA
     secure: isProd,
     // `lax` deja que la cookie viaje cuando el usuario llega desde el enlace
     // del correo; `strict` la bloquearía justo en ese caso.
-    sameSite: 'lax',
-    path: '/',
-    expires: Number.isNaN(expires.getTime()) ? undefined : expires
+    sameSite: "lax",
+    path: "/",
+    expires: Number.isNaN(expires.getTime()) ? undefined : expires,
   });
 };
 
 export const clearSessionCookie = (response: NextResponse): void => {
-  response.cookies.set(SESSION_COOKIE, '', {
+  response.cookies.set(SESSION_COOKIE, "", {
     httpOnly: true,
     secure: isProd,
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 0
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
   });
 };
 
@@ -39,5 +43,5 @@ export const clearSessionCookie = (response: NextResponse): void => {
 export const getSessionToken = async (): Promise<string | undefined> => {
   const jar = await cookies();
   const value = jar.get(SESSION_COOKIE)?.value;
-  return value === '' ? undefined : value;
+  return value === "" ? undefined : value;
 };

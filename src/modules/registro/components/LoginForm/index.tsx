@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
-import { Alert, FancyButton, Input } from '@biaenergy/ui';
-import { RiErrorWarningFill } from '@biaenergy/ui/icons';
-import { FormField } from '@/components/FormField';
+import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { Alert, FancyButton, Input } from "@biaenergy/ui";
+import { RiErrorWarningFill } from "@biaenergy/ui/icons";
+import { FormField } from "@/components/FormField";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const LoginForm = () => {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [sinVerificar, setSinVerificar] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,17 +21,17 @@ export const LoginForm = () => {
     setError(null);
     setSinVerificar(false);
 
-    if (!EMAIL_RE.test(email.trim()) || password === '') {
-      setError('Escribe tu correo y tu contraseña.');
+    if (!EMAIL_RE.test(email.trim()) || password === "") {
+      setError("Escribe tu correo y tu contraseña.");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim().toLowerCase(), password })
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
       });
 
       if (response.status === 403) {
@@ -42,16 +42,16 @@ export const LoginForm = () => {
       if (!response.ok) {
         // Mismo mensaje para "no existe" y "contraseña incorrecta": distinguirlos
         // convertiría esta pantalla en un buscador de quién está registrado.
-        setError('Correo o contraseña incorrectos.');
+        setError("Correo o contraseña incorrectos.");
         return;
       }
       // `refresh` además de `push`: la sesión vive en una cookie httpOnly, así
       // que los Server Components tienen que volver a renderizar para verla —
       // solo con `push` se podría servir el árbol cacheado de "sin sesión".
-      router.push('/mercado');
+      router.push("/mercado");
       router.refresh();
     } catch {
-      setError('No pudimos conectarnos. Prueba de nuevo en un momento.');
+      setError("No pudimos conectarnos. Prueba de nuevo en un momento.");
     } finally {
       setIsSubmitting(false);
     }
@@ -69,7 +69,8 @@ export const LoginForm = () => {
         <Alert.Root status="warning" size="small">
           <Alert.Icon as={RiErrorWarningFill} />
           <span>
-            Todavía no activaste tu cuenta. Busca el correo de confirmación que te enviamos.
+            Todavía no activaste tu cuenta. Busca el correo de confirmación que
+            te enviamos.
           </span>
         </Alert.Root>
       )}
@@ -81,7 +82,7 @@ export const LoginForm = () => {
               id="email"
               type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
             />
           </Input.Wrapper>
@@ -95,7 +96,7 @@ export const LoginForm = () => {
               id="password"
               type="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
           </Input.Wrapper>
@@ -103,7 +104,7 @@ export const LoginForm = () => {
       </FormField>
 
       <FancyButton.Root type="submit" disabled={isSubmitting} className="mt-2">
-        {isSubmitting ? 'Ingresando…' : 'Ingresar'}
+        {isSubmitting ? "Ingresando…" : "Ingresar"}
       </FancyButton.Root>
     </form>
   );

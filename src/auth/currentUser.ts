@@ -1,7 +1,7 @@
-import 'server-only';
-import { cache } from 'react';
-import { backendGet } from '@/backend/client';
-import { getSessionToken } from './session';
+import "server-only";
+import { cache } from "react";
+import { backendGet } from "@/backend/client";
+import { getSessionToken } from "./session";
 
 /** Cuenta del padrón de Utility Intelligence, tal como la devuelve el backend. */
 export interface CurrentUser {
@@ -31,7 +31,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   if (token === undefined) return null;
 
   try {
-    const { ok, data } = await backendGet<CurrentUser>('/yo', token);
+    const { ok, data } = await backendGet<CurrentUser>("/yo", token);
     return ok ? data : null;
   } catch {
     return null;

@@ -1,11 +1,22 @@
-import { redirect } from 'next/navigation';
-import { getCurrentUser } from '@/auth/currentUser';
-import { getMercados, getRankingMercado } from '@/modules/mercado/data/getRanking';
-import { construirFilas, filaPropia } from '@/modules/mercado/models/leaderboard';
-import { EncabezadoMercado } from '@/modules/mercado/components/EncabezadoMercado';
-import { Leaderboard } from '@/modules/mercado/components/Leaderboard';
-import { ResumenPosicion } from '@/modules/mercado/components/ResumenPosicion';
-import { SelectorMercado } from '@/modules/mercado/components/SelectorMercado';
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/auth/currentUser";
+import {
+  getMercados,
+  getRankingMercado,
+} from "@/modules/mercado/data/getRanking";
+import {
+  construirFilas,
+  filaPropia,
+} from "@/modules/mercado/models/leaderboard";
+import { EncabezadoMercado } from "@/modules/mercado/components/EncabezadoMercado";
+import { Leaderboard } from "@/modules/mercado/components/Leaderboard";
+import { ResumenPosicion } from "@/modules/mercado/components/ResumenPosicion";
+import { SelectorMercado } from "@/modules/mercado/components/SelectorMercado";
+import { SelectorTarifa } from "@/modules/mercado/components/SelectorTarifa";
+import {
+  leerNivelTension,
+  leerPropiedad,
+} from "@/modules/mercado/models/combos";
 
 /**
  * El producto: la competitividad tarifaria del mercado elegido.
@@ -14,17 +25,23 @@ import { SelectorMercado } from '@/modules/mercado/components/SelectorMercado';
  * parámetro se usa el primero disponible — no hay forma de adivinar cuál le
  * importa a cada quien, porque una empresa compite en varios mercados a la vez
  * y el registro no pregunta cuál es el suyo.
+ *
+ * El nivel de tensión (`?nt=`) y la propiedad de los equipos (`?propiedad=`)
+ * viajan igual, y por el mismo motivo: definen QUÉ tarifa se está comparando,
+ * así que un enlace a esta vista tiene que llevar esa elección adentro. Quien
+ * comparte "mirá cómo estamos en Antioquia" no puede terminar mostrando otra
+ * tarifa distinta a la que vio.
  */
 const MercadoPage = async ({
-  searchParams
+  searchParams,
 }: {
-  searchParams: Promise<{ mercado?: string }>;
+  searchParams: Promise<{ mercado?: string; nt?: string; propiedad?: string }>;
 }) => {
   const user = await getCurrentUser();
   // El registro es el gate del producto: sin sesión, a la puerta.
-  if (user === null) redirect('/ingresar');
+  if (user === null) redirect("/ingresar");
 
-  const { mercado } = await searchParams;
+  const { mercado, nt, propiedad } = await searchParams;
   const mercados = await getMercados();
   const elegido = mercado ?? mercados[0];
 
@@ -41,8 +58,16 @@ const MercadoPage = async ({
     );
   }
 
-  const ranking = await getRankingMercado(elegido);
-  const filas = ranking === null ? [] : construirFilas(ranking.items, user.gold_provider);
+  // Los parámetros inválidos se descartan en vez de propagarse: el backend
+  // aplica su default y el usuario ve una tabla real, no un error por un typo
+  // en la URL. Cuál quedó usándose se muestra siempre en el selector.
+  const ranking = await getRankingMercado(
+    elegido,
+    leerNivelTension(nt),
+    leerPropiedad(propiedad),
+  );
+  const filas =
+    ranking === null ? [] : construirFilas(ranking.items, user.gold_provider);
 
   return (
     <>
@@ -59,7 +84,16 @@ const MercadoPage = async ({
               mes={ranking.mes}
             />
           )}
-          <SelectorMercado mercados={mercados} actual={elegido} />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <SelectorMercado mercados={mercados} actual={elegido} />
+            {ranking !== null && ranking.combos_disponibles.length > 1 && (
+              <SelectorTarifa
+                combos={ranking.combos_disponibles}
+                tensionLevel={ranking.tension_level}
+                rateType={ranking.rate_type}
+              />
+            )}
+          </div>
         </div>
 
         {ranking === null ? (
@@ -70,11 +104,17 @@ const MercadoPage = async ({
           <Leaderboard filas={filas} />
         )}
 
-        {/* Honestidad de datos: qué se está mirando exactamente. */}
-        <p className="text-paragraph-xs text-text-soft-400 border-stroke-soft-200 border-t pt-6">
-          Costo unitario ponderado por demanda, con las tarifas publicadas de cada agente. Fuente:
-          XM. Se muestra el último mes con datos completos del mercado.
-        </p>
+        {/* Honestidad de datos: qué se está mirando exactamente.
+
+            El texto lo manda el backend junto con las cifras, no se escribe
+            acá. Si la nota vive en la pantalla, cambiar cómo se calcula el dato
+            deja la nota mintiendo, y nadie se entera. */}
+        {ranking !== null && (
+          <div className="text-paragraph-xs text-text-soft-400 border-stroke-soft-200 flex flex-col gap-1 border-t pt-6">
+            <p>{ranking.nota}</p>
+            <p>{ranking.fuente}</p>
+          </div>
+        )}
       </main>
     </>
   );
