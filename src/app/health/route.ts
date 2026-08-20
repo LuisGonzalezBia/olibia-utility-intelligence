@@ -1,6 +1,9 @@
 /**
  * Sonda de vida del contenedor.
  *
+ * Vive en /health y no bajo basePath: Cactus hace liveness sin conocer el
+ * prefijo del microservicio, igual que en ms-mcp.
+ *
  * Solo dice que el proceso de Next responde: no toca el backend ni la base.
  * Es a proposito — si el healthcheck dependiera del backend, una caida de
  * status-bia haria que la plataforma reciclara este contenedor en loop, y la
