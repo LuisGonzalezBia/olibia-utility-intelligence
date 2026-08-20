@@ -111,8 +111,8 @@ const MercadoPage = async ({
             deja la nota mintiendo, y nadie se entera. */}
         {ranking !== null && (
           <div className="text-paragraph-xs text-text-soft-400 border-stroke-soft-200 flex flex-col gap-1 border-t pt-6">
-            <p>{ranking.nota}</p>
-            <p>{ranking.fuente}</p>
+            {ranking.nota !== "" && <p>{ranking.nota}</p>}
+            {ranking.fuente !== "" && <p>{ranking.fuente}</p>}
           </div>
         )}
       </main>
