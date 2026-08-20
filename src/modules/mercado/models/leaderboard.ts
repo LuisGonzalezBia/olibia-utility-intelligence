@@ -17,13 +17,18 @@ export const construirFilas = (
     goldProvider == null
       ? undefined
       : items.find((i) => i.provider === goldProvider);
-  const miCu = mio?.cu;
+  const miCu = mio?.cu ?? null;
 
   return items.map((item) => ({
     ...item,
     esMio: mio !== undefined && item.provider === mio.provider,
+    // Hace falta MI tarifa y la del competidor: si falta cualquiera de las dos
+    // no hay comparación posible, y un 0 diría "estamos iguales", que es una
+    // afirmación distinta a "no sé".
     deltaPorcentual:
-      miCu === undefined || miCu === 0 ? null : ((item.cu - miCu) / miCu) * 100,
+      miCu === null || miCu === 0 || item.cu === null
+        ? null
+        : ((item.cu - miCu) / miCu) * 100,
   }));
 };
 

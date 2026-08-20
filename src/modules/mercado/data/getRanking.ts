@@ -2,6 +2,7 @@ import "server-only";
 import { backendGet } from "@/backend/client";
 import { getSessionToken } from "@/auth/session";
 import type {
+  AgenteRanking,
   ListaMercados,
   RankingMercado,
 } from "../models/ranking.interface";
@@ -59,7 +60,46 @@ export const getRankingMercado = async (
  * versiones del backend, y la vieja no manda `combos_disponibles` — eso ya
  * tumbó la página entera con un "Cannot read properties of undefined".
  */
-type RespuestaRanking = Partial<RankingMercado>;
+type RespuestaRanking = Partial<Omit<RankingMercado, "items">> & {
+  items?: FilaCruda[];
+};
+
+/**
+ * Una fila como puede venir de CUALQUIERA de las dos versiones del backend.
+ *
+ * La anterior mandaba `cu_simple`/`cu_ponderado` y `pos_simple`/`pos_ponderado`;
+ * la nueva manda `cu` y `pos`. Leyendo solo los nombres nuevos, la tabla salía
+ * llena de "NaN $/kWh" — que es peor que un error, porque parece un dato.
+ *
+ * `cu_ponderado` y `cu_simple` eran el mismo número en la matview (verificado:
+ * 8.622 filas, cero difieren), así que tomar cualquiera de los dos es correcto,
+ * no una aproximación.
+ */
+type FilaCruda = Partial<AgenteRanking> & {
+  cu_ponderado?: number;
+  cu_simple?: number;
+  pos_ponderado?: number;
+  pos_simple?: number;
+};
+
+/** Primer número presente; `null` si ninguno vino. */
+const primerNumero = (...vs: (number | null | undefined)[]): number | null => {
+  for (const v of vs) if (typeof v === "number" && Number.isFinite(v)) return v;
+  return null;
+};
+
+const normalizarFila = (f: FilaCruda): AgenteRanking => ({
+  provider: f.provider ?? "",
+  tipo: f.tipo ?? "",
+  cu: primerNumero(f.cu, f.cu_ponderado, f.cu_simple),
+  pos: primerNumero(f.pos, f.pos_ponderado, f.pos_simple),
+  generacion: f.generacion ?? null,
+  comercializacion: f.comercializacion ?? null,
+  transporte: f.transporte ?? null,
+  distribucion: f.distribucion ?? null,
+  perdidas: f.perdidas ?? null,
+  restricciones: f.restricciones ?? null,
+});
 
 /**
  * Rellena lo que falte para que ningún consumidor tenga que preguntar si un
@@ -80,5 +120,5 @@ const normalizarRanking = (data: RespuestaRanking): RankingMercado => ({
   fuente: data.fuente ?? "",
   nota: data.nota ?? "",
   combos_disponibles: data.combos_disponibles ?? [],
-  items: data.items ?? [],
+  items: (data.items ?? []).map(normalizarFila),
 });

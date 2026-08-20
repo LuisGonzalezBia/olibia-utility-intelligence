@@ -3,19 +3,22 @@ export interface AgenteRanking {
   provider: string;
   /** "OR" | "Comercializador" — el OR es el operador de red del mercado. */
   tipo: string;
-  /** Costo Unitario en $/kWh, para el nivel de tensión y propiedad de la tabla. */
-  cu: number;
-  /** Posición dentro del mercado, 1 = más barato. */
-  pos: number;
+  /**
+   * Costo Unitario en $/kWh, para el nivel de tensión y propiedad de la tabla.
+   * `null` cuando el backend no lo mandó — la pantalla muestra "—", nunca NaN.
+   */
+  cu: number | null;
+  /** Posición dentro del mercado, 1 = más barato. `null` si no vino. */
+  pos: number | null;
 
   // Los seis componentes CREG que suman el CU. Están para que la cifra sea
   // auditable: contra qué componente se pierde, no solo que se va de quinto.
-  generacion: number;
-  comercializacion: number;
-  transporte: number;
-  distribucion: number;
-  perdidas: number;
-  restricciones: number;
+  generacion: number | null;
+  comercializacion: number | null;
+  transporte: number | null;
+  distribucion: number | null;
+  perdidas: number | null;
+  restricciones: number | null;
 }
 
 /**

@@ -1,3 +1,4 @@
+import { formatearCU } from "../../models/combos";
 import { cn } from "@/utils/cn";
 import type { FilaLeaderboard } from "../../models/ranking.interface";
 
@@ -100,7 +101,7 @@ export const Leaderboard = ({ filas }: LeaderboardProps) => (
                   : "text-label-sm text-text-sub-600",
               )}
             >
-              {pesos.format(fila.cu)}
+              {formatearCU(fila.cu, pesos)}
             </span>
             <span className="text-paragraph-xs text-text-soft-400">$/kWh</span>
           </div>

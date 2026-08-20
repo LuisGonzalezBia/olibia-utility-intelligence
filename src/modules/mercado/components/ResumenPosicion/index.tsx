@@ -1,3 +1,4 @@
+import { formatearCU } from "../../models/combos";
 import type { FilaLeaderboard } from "../../models/ranking.interface";
 
 interface ResumenPosicionProps {
@@ -49,12 +50,14 @@ export const ResumenPosicion = ({
     ) : (
       <>
         <h1 className="text-title-h4 text-text-strong-950">
-          Puesto {propia.pos} de {total}
+          {propia.pos === null
+            ? `${total} agentes en el mercado`
+            : `Puesto ${propia.pos} de ${total}`}
         </h1>
         <p className="text-paragraph-md text-text-sub-600">
           Tu costo unitario es{" "}
           <strong className="text-text-strong-950 font-medium">
-            {pesos.format(propia.cu)} $/kWh
+            {formatearCU(propia.cu, pesos)} $/kWh
           </strong>
           .
         </p>

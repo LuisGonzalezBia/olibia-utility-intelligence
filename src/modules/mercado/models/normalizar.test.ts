@@ -72,3 +72,63 @@ describe("normalizarRanking", () => {
     assert.equal(r.rate_type, "OPERATOR");
   });
 });
+
+/**
+ * Compatibilidad con el backend anterior.
+ *
+ * El caso real: la tabla salió con "NaN $/kWh" en las siete filas y "Puesto
+ * de 7" sin número, porque el backend deployado mandaba `cu_ponderado` y el
+ * front leía `cu`. NaN es peor que un error visible — parece un dato.
+ */
+const primerNumero = (...vs: (number | null | undefined)[]): number | null => {
+  for (const v of vs) if (typeof v === "number" && Number.isFinite(v)) return v;
+  return null;
+};
+
+const normalizarFila = (f: Parcial) => ({
+  provider: (f.provider as string) ?? "",
+  cu: primerNumero(
+    f.cu as number,
+    f.cu_ponderado as number,
+    f.cu_simple as number,
+  ),
+  pos: primerNumero(
+    f.pos as number,
+    f.pos_ponderado as number,
+    f.pos_simple as number,
+  ),
+});
+
+describe("normalizarFila — convivencia de las dos versiones del backend", () => {
+  it("lee el formato viejo (cu_ponderado / pos_ponderado)", () => {
+    const f = normalizarFila({
+      provider: "BIA ENERGY",
+      cu_ponderado: 860,
+      pos_ponderado: 1,
+    });
+    assert.equal(f.cu, 860);
+    assert.equal(f.pos, 1);
+  });
+
+  it("lee el formato nuevo (cu / pos)", () => {
+    const f = normalizarFila({ provider: "BIA ENERGY", cu: 860, pos: 1 });
+    assert.equal(f.cu, 860);
+  });
+
+  it("prefiere el nuevo si vienen los dos", () => {
+    const f = normalizarFila({ cu: 860, cu_ponderado: 999 });
+    assert.equal(f.cu, 860);
+  });
+
+  it("sin ninguno devuelve null, no NaN", () => {
+    const f = normalizarFila({ provider: "X" });
+    // null se pinta como "—"; NaN se pinta como "NaN" y parece un cálculo.
+    assert.equal(f.cu, null);
+    assert.ok(!Number.isNaN(f.cu as unknown as number));
+  });
+
+  it("descarta un NaN que venga en el JSON", () => {
+    const f = normalizarFila({ cu: NaN, cu_ponderado: 860 });
+    assert.equal(f.cu, 860);
+  });
+});
