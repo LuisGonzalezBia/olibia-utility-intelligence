@@ -55,6 +55,11 @@ export interface RegistroFormValues {
   empresaId: string;
   /** Nombre escrito a mano. Solo cuando `empresaId === EMPRESA_NO_LISTADA`. */
   empresaOtra?: string;
+  /**
+   * Actividad declarada a mano. Solo aplica cuando la empresa NO está en el
+   * catálogo — si está, la actividad sale de ahí y este campo se ignora.
+   */
+  actividad?: ActividadEmpresa | null;
   /** `null` mientras `representaOrganizacion` sea `false` o no se haya elegido. */
   tipoOrganizacion: TipoOrganizacion | null;
   area: AreaEquipo | null;

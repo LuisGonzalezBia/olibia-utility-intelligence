@@ -16,6 +16,7 @@ import { FormField } from "@/components/FormField";
 import type { Locale } from "@/i18n/config";
 import { getRegistroDict } from "../../dictionaries";
 import { EMPRESA_NO_LISTADA, getEmpresaById } from "../../models/empresas";
+import { ACTIVIDADES } from "../../models/actividades";
 import type {
   AreaEquipo,
   RegistroFormValues,
@@ -59,6 +60,7 @@ const EMPTY: RegistroFormValues = {
   representaOrganizacion: true,
   empresaId: "",
   empresaOtra: "",
+  actividad: null,
   tipoOrganizacion: null,
   area: null,
   autorizaDatos: false,
@@ -130,6 +132,14 @@ export const RegistroForm = ({ locale }: RegistroFormProps) => {
       ) {
         e.empresaOtra = dict.errors.empresaOtraRequired;
       }
+      if (
+        values.empresaId === EMPRESA_NO_LISTADA &&
+        (values.actividad ?? null) === null
+      ) {
+        // Sin actividad no se sabe si le aplican las métricas, y quedaría
+        // fuera del intercambio sin entender por qué.
+        e.actividad = "Selecciona la actividad de tu organización.";
+      }
     }
     if (!values.autorizaDatos) e.autorizaDatos = dict.habeasData.required;
     return e;
@@ -174,7 +184,8 @@ export const RegistroForm = ({ locale }: RegistroFormProps) => {
       // Es lo que permite resaltar su fila en el ranking; null si no tiene tarifa.
       goldProvider: empresa?.goldProvider ?? null,
       empresaNombre: empresa?.name ?? (values.empresaOtra ?? "").trim(),
-      actividad: empresa?.activity ?? null,
+      // Del catálogo si está; si no, la que declaró en el formulario.
+      actividad: empresa?.activity ?? values.actividad ?? null,
       enCatalogo: empresa !== undefined,
       tipoOrganizacion: values.tipoOrganizacion,
       area: values.area,
@@ -403,6 +414,38 @@ export const RegistroForm = ({ locale }: RegistroFormProps) => {
                   />
                 </Input.Wrapper>
               </Input.Root>
+            </FormField>
+          )}
+
+          {/* La actividad solo se pregunta cuando NO sale del catálogo.
+              No es un campo más: decide si a esta persona le aplicará el
+              intercambio de métricas. Un comercializador o un operador de red
+              tienen clientes finales; un generador, un transportador o un
+              regulador no, y ofrecerles después un formulario de NPS sería
+              pedirles algo que no existe. */}
+          {esNoListado && (
+            <FormField
+              id="actividad"
+              label="Actividad principal"
+              required
+              error={errors.actividad}
+              hint="Nos dice qué comparaciones tienen sentido para tu organización."
+            >
+              <Select.Root
+                value={values.actividad ?? ""}
+                onValueChange={(v) => set("actividad", v as never)}
+              >
+                <Select.Trigger id="actividad">
+                  <Select.Value placeholder="Selecciona una" />
+                </Select.Trigger>
+                <Select.Content>
+                  {ACTIVIDADES.map((a) => (
+                    <Select.Item key={a.valor} value={a.valor}>
+                      {a.etiqueta}
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Root>
             </FormField>
           )}
         </>
