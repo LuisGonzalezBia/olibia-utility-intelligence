@@ -1,5 +1,9 @@
 # Journey de Olibia Utility Intelligence
 
+> **PDF para compartir:** [`journey/journey.pdf`](journey/journey.pdf) — 8 páginas
+> con las pantallas reales del producto. La versión web navegable está en
+> [`journey/journey.html`](journey/journey.html).
+
 Cómo recorre el producto un agente del sector, desde que llega sin conocernos
 hasta que sus reportes circulan dentro de su empresa.
 
