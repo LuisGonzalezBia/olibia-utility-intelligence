@@ -1,0 +1,111 @@
+/**
+ * Tema Olibia sobre @biaenergy/ui.
+ *
+ * El design system es el de Bia: su marca es teal y su `primary` es
+ * gray-950 (negro). Importado tal cual, Utility Intelligence salía en blanco y
+ * negro — correcto tipográficamente, pero indistinguible de cualquier producto
+ * de Bia. Acá quien habla es Oli, de Olibia.
+ *
+ * En vez de bifurcar el DS, se reasignan sus tokens. Todo lo semántico
+ * (`bg-white-0`, `text-strong-950`, `stroke-soft-200`, `primary-base`) resuelve
+ * por `var()` hacia la rampa neutra y hacia primary/brand, así que reemplazar
+ * esas dos rampas repinta la aplicación completa sin tocar un componente.
+ *
+ * Los valores salen de la paleta de Olibia (la misma del front que armó
+ * Manuela): azul → celeste → rosa → morado → coral → durazno → amarillo, sobre
+ * neutros con tinte violeta y fondo crema. No son aproximaciones: están
+ * copiados en OKLCH desde ese archivo.
+ */
+:root {
+  /* Paleta Olibia — nombres de la marca, no del DS. */
+  --olibia-azul: oklch(0.671 0.173 269.6);
+  --olibia-azul-soft: oklch(0.74 0.13 269.6);
+  --olibia-azul-deep: oklch(0.55 0.18 272);
+  --olibia-celeste: oklch(0.862 0.06 238.5);
+  --olibia-rosa: oklch(0.718 0.155 347.3);
+  --olibia-morado: oklch(0.573 0.195 309.9);
+  --olibia-coral: oklch(0.627 0.195 28.9);
+  --olibia-durazno: oklch(0.827 0.115 57.2);
+  --olibia-amarillo: oklch(0.926 0.169 101.1);
+  --olibia-verde: oklch(0.72 0.14 165);
+  --olibia-crema: oklch(0.973 0.005 106);
+
+  /* El degradado de la marca: es la firma visual de Olibia y el único lugar
+     donde aparecen los siete colores juntos. */
+  --olibia-gradiente: linear-gradient(
+    100deg,
+    var(--olibia-azul) 0%,
+    var(--olibia-celeste) 22%,
+    var(--olibia-rosa) 46%,
+    var(--olibia-morado) 62%,
+    var(--olibia-coral) 78%,
+    var(--olibia-durazno) 90%,
+    var(--olibia-amarillo) 100%
+  );
+
+  /* --- Rampa neutra ---------------------------------------------------
+     Los grises del DS son neutros puros (#171717 … #ffffff). Los de Olibia
+     llevan un tinte violeta (hue 285) que es lo que hace que el gris se lea
+     elegido y no heredado. Como `--color-neutral-*` es alias de
+     `--color-gray-*`, redefinir la rampa gris arrastra bg, text y stroke. */
+  --color-gray-950: oklch(0.152 0.011 285.1);
+  --color-gray-900: oklch(0.199 0.014 285.1);
+  --color-gray-800: oklch(0.29 0.02 285.1);
+  --color-gray-700: oklch(0.35 0.018 285);
+  --color-gray-600: oklch(0.46 0.016 285);
+  --color-gray-500: oklch(0.56 0.014 285);
+  --color-gray-400: oklch(0.66 0.012 285);
+  --color-gray-300: oklch(0.8 0.008 285);
+  --color-gray-200: oklch(0.9 0.005 285);
+  --color-gray-100: oklch(0.94 0.004 285);
+  --color-gray-50: oklch(0.972 0.003 285);
+  --color-gray-0: oklch(1 0 90);
+
+  /* --- Primary --------------------------------------------------------
+     Botones, focus, enlaces y estados activos. Pasa de negro a azul Olibia. */
+  --color-primary-dark: oklch(0.47 0.18 272);
+  --color-primary-darker: oklch(0.51 0.18 272);
+  --color-primary-base: var(--olibia-azul-deep);
+  --color-primary-light: var(--olibia-azul-soft);
+  --color-primary-lighter: oklch(0.94 0.03 272);
+  --color-primary-alpha-24: oklch(0.55 0.18 272 / 0.24);
+  --color-primary-alpha-16: oklch(0.55 0.18 272 / 0.16);
+  --color-primary-alpha-10: oklch(0.55 0.18 272 / 0.1);
+
+  /* --- Brand ----------------------------------------------------------
+     El DS lo tiene cableado a teal (la marca de Bia). Acá es el azul. */
+  --color-brand-base: var(--olibia-azul);
+  --color-brand-hover: var(--olibia-azul-deep);
+  --color-brand-focus: var(--olibia-azul-deep);
+  --color-brand-soft: var(--olibia-azul-soft);
+
+  /* --- Series de gráficas ---------------------------------------------
+     Orden fijo tomado del degradado. No se cicla: una novena serie se
+     agrupa en "otros", no inventa un tono nuevo. */
+  --color-chart-1: var(--olibia-azul);
+  --color-chart-2: var(--olibia-rosa);
+  --color-chart-3: var(--olibia-celeste);
+  --color-chart-4: var(--olibia-durazno);
+  --color-chart-5: var(--olibia-morado);
+
+  /* Fondo de página en crema, tarjetas en blanco. Es la diferencia entre
+     "una app" y la portada de Olibia: el blanco puro deja las tarjetas sin
+     borde perceptible y aplana la jerarquía. */
+  --color-bg-weak-50: var(--olibia-crema);
+}
+
+.dark {
+  /* En oscuro el azul profundo se hunde contra el fondo; sube al azul medio
+     para conservar contraste, igual que hace el DS con su teal. */
+  --color-primary-base: var(--olibia-azul);
+  --color-primary-light: var(--olibia-azul-soft);
+  --color-brand-base: var(--olibia-azul-soft);
+  --color-brand-hover: var(--olibia-celeste);
+  --color-brand-focus: var(--olibia-celeste);
+  --color-bg-weak-50: var(--color-gray-800);
+}
+
+/** El degradado de marca como utilidad, para franjas y textos de acento. */
+.olibia-gradiente {
+  background-image: var(--olibia-gradiente);
+}

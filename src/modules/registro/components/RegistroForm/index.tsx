@@ -535,7 +535,7 @@ export const RegistroForm = ({ locale }: RegistroFormProps) => {
       </div>
 
       {/* Una sola FancyButton por pantalla: es la acción primaria. */}
-      <FancyButton.Root type="submit" disabled={isSubmitting} className="mt-2">
+      <FancyButton.Root variant="primary" type="submit" disabled={isSubmitting} className="mt-2">
         {isSubmitting ? dict.submitting : dict.submit}
       </FancyButton.Root>
     </form>

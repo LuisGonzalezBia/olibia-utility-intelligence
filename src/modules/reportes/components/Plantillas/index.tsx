@@ -44,7 +44,7 @@ export const Plantillas = ({ cuota }: { cuota: Cuota }) => (
           </ul>
 
           {cuota.puede_crear_reporte ? (
-            <FancyButton.Root size="xsmall" className="mt-1 self-start">
+            <FancyButton.Root variant="primary" size="xsmall" className="mt-1 self-start">
               Crear este reporte
             </FancyButton.Root>
           ) : (

@@ -29,7 +29,7 @@ export const ListaReportes = ({
           </p>
         </div>
         {cuota.puede_crear_reporte && (
-          <FancyButton.Root asChild size="small">
+          <FancyButton.Root variant="primary" asChild size="small">
             <Link href="/reportes/nuevo">Crear mi reporte</Link>
           </FancyButton.Root>
         )}

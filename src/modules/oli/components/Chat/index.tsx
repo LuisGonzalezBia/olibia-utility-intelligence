@@ -191,7 +191,7 @@ export const ChatOli = ({
             />
           </Input.Wrapper>
         </Input.Root>
-        <FancyButton.Root
+        <FancyButton.Root variant="primary"
           type="submit"
           disabled={pensando || texto.trim() === ""}
         >

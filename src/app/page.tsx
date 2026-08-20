@@ -107,7 +107,7 @@ const HomePage = async () => {
             Al crearla nos dices en qué mercado operas, y entonces sí podemos
             mostrarte tu posición frente a los demás.
           </p>
-          <FancyButton.Root asChild size="small">
+          <FancyButton.Root variant="primary" asChild size="small">
             <Link href="/registro">Crear cuenta gratis</Link>
           </FancyButton.Root>
         </div>
@@ -127,12 +127,12 @@ const HomePage = async () => {
               <Button.Root asChild variant="neutral" mode="ghost" size="xsmall">
                 <Link href="/ingresar">Ingresar</Link>
               </Button.Root>
-              <FancyButton.Root asChild size="xsmall">
+              <FancyButton.Root variant="primary" asChild size="xsmall">
                 <Link href="/registro">Crear cuenta</Link>
               </FancyButton.Root>
             </div>
           ) : (
-            <FancyButton.Root asChild size="xsmall">
+            <FancyButton.Root variant="primary" asChild size="xsmall">
               <Link href="/chat">Entrar a Oli</Link>
             </FancyButton.Root>
           )}

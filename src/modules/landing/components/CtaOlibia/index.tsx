@@ -47,7 +47,7 @@ export const CtaOlibia = ({ variante = "tarjeta", accion }: CtaOlibiaProps) => {
         operación de campo, en una sola plataforma.
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <FancyButton.Root asChild>
+        <FancyButton.Root variant="primary" asChild>
           <a href={AGENDA} target="_blank" rel="noreferrer">
             Agenda una demo
           </a>

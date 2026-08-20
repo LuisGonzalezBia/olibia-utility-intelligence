@@ -159,7 +159,7 @@ export const FormularioMetricas = () => {
         ))}
       </div>
 
-      <FancyButton.Root
+      <FancyButton.Root variant="primary"
         type="submit"
         disabled={enviando || !alMenosUna}
         className="self-start"

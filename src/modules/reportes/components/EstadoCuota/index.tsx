@@ -33,7 +33,7 @@ export const EstadoCuota = ({ cuota }: { cuota: Cuota }) => (
     </div>
 
     {cuota.puede_aportar_metricas && !cuota.puede_crear_reporte && (
-      <FancyButton.Root asChild size="small" className="shrink-0">
+      <FancyButton.Root variant="primary" asChild size="small" className="shrink-0">
         <Link href="/reportes/metricas">Compartir mis métricas</Link>
       </FancyButton.Root>
     )}
