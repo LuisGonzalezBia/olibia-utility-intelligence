@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/auth/currentUser";
 import { EncabezadoMercado } from "@/modules/mercado/components/EncabezadoMercado";
 import { Oli, OliNombre } from "@/modules/shell/components/Oli";
 import { ChatOli } from "@/modules/oli/components/Chat";
+import { HistorialConversaciones } from "@/modules/oli/components/HistorialConversaciones";
+import { getConversaciones } from "@/modules/oli/data/conversaciones";
 
 /** Preguntas de arranque para quien ya tiene cuenta: pueden ser sobre su empresa. */
 const SUGERENCIAS = [
@@ -16,6 +18,8 @@ const ChatPage = async () => {
   const user = await getCurrentUser();
   if (user === null) redirect("/ingresar");
 
+  const conversaciones = await getConversaciones();
+
   return (
     <>
       <EncabezadoMercado user={user} />
@@ -25,6 +29,7 @@ const ChatPage = async () => {
           Hola, soy <OliNombre />. ¿Qué quieres saber del mercado?
         </h1>
         <ChatOli sugerencias={SUGERENCIAS} conSesion />
+        <HistorialConversaciones items={conversaciones} />
       </main>
     </>
   );

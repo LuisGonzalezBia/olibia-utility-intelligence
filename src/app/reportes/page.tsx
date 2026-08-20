@@ -4,6 +4,7 @@ import { getReportes } from "@/modules/reportes/data/getReportes";
 import { EncabezadoMercado } from "@/modules/mercado/components/EncabezadoMercado";
 import { EstadoCuota } from "@/modules/reportes/components/EstadoCuota";
 import { ListaReportes } from "@/modules/reportes/components/ListaReportes";
+import { Plantillas } from "@/modules/reportes/components/Plantillas";
 
 /**
  * Reportes del usuario y el estado del intercambio.
@@ -31,6 +32,7 @@ const ReportesPage = async () => {
 
         <EstadoCuota cuota={cuota} />
         <ListaReportes reportes={reportes} cuota={cuota} />
+        <Plantillas cuota={cuota} />
       </main>
     </>
   );

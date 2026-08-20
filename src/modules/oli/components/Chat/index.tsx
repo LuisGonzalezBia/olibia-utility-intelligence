@@ -19,10 +19,22 @@ interface ChatOliProps {
   sugerencias: readonly string[];
   /** Sin sesión, Oli invita a crear cuenta cuando la pregunta es sobre la empresa. */
   conSesion: boolean;
+  /** Hilo previo a retomar. Vacío arranca una conversación nueva. */
+  inicial?: Turno[];
+  /** Id del hilo que se está retomando, para seguir escribiendo sobre él. */
+  idInicial?: number | null;
 }
 
-export const ChatOli = ({ sugerencias, conSesion }: ChatOliProps) => {
-  const [turnos, setTurnos] = useState<Turno[]>([]);
+export const ChatOli = ({
+  sugerencias,
+  conSesion,
+  inicial = [],
+  idInicial = null,
+}: ChatOliProps) => {
+  const [turnos, setTurnos] = useState<Turno[]>(inicial);
+  // Id del hilo guardado. Se llena con el primer guardado y de ahí en adelante
+  // se actualiza el mismo, en vez de crear uno por turno.
+  const conversacionId = useRef<number | null>(idInicial);
   const [texto, setTexto] = useState("");
   const [pensando, setPensando] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,14 +73,18 @@ export const ChatOli = ({ sugerencias, conSesion }: ChatOliProps) => {
         setError(data.error ?? "No pude responder en este momento.");
         return;
       }
-      setTurnos([
+      const completo: Turno[] = [
         ...conMiTurno,
         {
           quien: "oli",
           texto: data.respuesta ?? "",
           visual: data.visual ?? null,
         },
-      ]);
+      ];
+      setTurnos(completo);
+      // Se guarda sin await: el hilo ya está en pantalla y esperar al guardado
+      // solo agregaría latencia a algo que el usuario no está mirando.
+      void guardar(completo);
     } catch {
       setError("No pudimos conectarnos. Prueba de nuevo en un momento.");
     } finally {
@@ -77,6 +93,27 @@ export const ChatOli = ({ sugerencias, conSesion }: ChatOliProps) => {
       requestAnimationFrame(() =>
         finRef.current?.scrollIntoView({ behavior: "smooth" }),
       );
+    }
+  };
+
+  /** Persiste el hilo. Un fallo acá no puede afectar la conversación. */
+  const guardar = async (hilo: Turno[]) => {
+    if (!conSesion) return;
+    try {
+      const res = await fetch("/api/oli/conversacion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: conversacionId.current ?? 0,
+          primera_pregunta: hilo.find((t) => t.quien === "yo")?.texto ?? "",
+          mensajes: hilo,
+        }),
+      });
+      const data = (await res.json()) as { id?: number | null };
+      if (typeof data.id === "number") conversacionId.current = data.id;
+    } catch {
+      // Silencioso a propósito: no hay nada que el usuario pueda hacer, y un
+      // error sobre el historial distraería de la respuesta que sí llegó.
     }
   };
 
