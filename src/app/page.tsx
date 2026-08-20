@@ -83,21 +83,29 @@ const HomePage = async () => {
       ),
     },
     {
-      id: "competitividad",
-      label: "Tu competitividad",
+      // "Tarifas" y no "Tu competitividad": acá todavía no sabemos quién es
+      // esta persona ni en qué mercado opera. Hablarle de "tu" posición antes
+      // de que se identifique promete algo que la pantalla no puede cumplir.
+      id: "tarifas",
+      label: "Tarifas",
       contenido: (
         <div className="border-stroke-soft-200 flex flex-col items-start gap-4 rounded-2xl border border-dashed p-8">
           <h3 className="text-label-md text-text-strong-950">
-            Tu tarifa frente a la de tus competidores
+            Ranking de tarifas por mercado
           </h3>
           <p className="text-paragraph-sm text-text-sub-600 max-w-xl">
-            Ranking de costo unitario de tu mercado, por nivel de tensión y
-            propiedad de equipos, con el desglose de contra qué componente ganas
-            o pierdes. Y tu cobertura contratada frente al resto.
+            El costo unitario de cada comercializador y operador de red, mercado
+            por mercado, con el desglose de los seis componentes CREG:
+            generación, comercialización, transporte, distribución, pérdidas y
+            restricciones. Y la cobertura contratada de cada agente.
+          </p>
+          <p className="text-paragraph-sm text-text-sub-600 max-w-xl">
+            Son datos públicos, pero identifican a cada empresa por su nombre.
+            Por eso pedimos una cuenta: para saber quién los consulta.
           </p>
           <p className="text-paragraph-xs text-text-soft-400 max-w-xl">
-            Los datos con nombre propio de empresa requieren cuenta. Es gratis y
-            toma un minuto.
+            Al crearla nos dices en qué mercado operas, y entonces sí podemos
+            mostrarte tu posición frente a los demás.
           </p>
           <FancyButton.Root asChild size="small">
             <Link href="/registro">Crear cuenta gratis</Link>
