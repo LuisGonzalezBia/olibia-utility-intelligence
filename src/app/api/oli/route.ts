@@ -30,6 +30,17 @@ import {
 // pedir datos deja la petición colgada y consumiendo tokens.
 const MAX_VUELTAS = 4;
 
+/**
+ * Herramientas cuya respuesta la interfaz sabe dibujar.
+ *
+ * Para estas, Oli comenta y la tabla la pinta el front — que se lee mejor que
+ * un markdown y no gasta tokens en escribirla.
+ */
+const VISUALIZABLES = new Set([
+  "ranking_de_tarifas",
+  "compras_en_bolsa_y_cobertura",
+]);
+
 export async function POST(request: Request) {
   if (!hayKeyDeOli()) {
     // 503 y no 500: no es una falla, es que falta configurar la key. El front
@@ -54,7 +65,10 @@ export async function POST(request: Request) {
   // Un historial sin tope deja que el cliente mande una conversación enorme y
   // la pague la cuenta de Olibia.
   if (mensajes.length > 40) {
-    return NextResponse.json({ error: "conversación demasiado larga" }, { status: 413 });
+    return NextResponse.json(
+      { error: "conversación demasiado larga" },
+      { status: 413 },
+    );
   }
 
   const token = await getSessionToken();
@@ -63,6 +77,8 @@ export async function POST(request: Request) {
   const herramientas = herramientasPara(conSesion);
 
   const historial: Mensaje[] = [...mensajes];
+  // Última consulta con forma conocida, para que el front la dibuje.
+  let visual: { tipo: string; datos: unknown } | null = null;
 
   try {
     for (let vuelta = 0; vuelta < MAX_VUELTAS; vuelta += 1) {
@@ -77,6 +93,9 @@ export async function POST(request: Request) {
           .trim();
         return NextResponse.json({
           respuesta: texto,
+          // La tabla la pinta la interfaz, no Oli con markdown: se ve mejor,
+          // se lee de un vistazo y ahorra los tokens de escribirla.
+          visual,
           // El front lo usa para decidir si muestra el botón de registro.
           anonimo: token === undefined,
         });
@@ -84,17 +103,21 @@ export async function POST(request: Request) {
 
       historial.push({ role: "assistant", content: respuesta.content });
       const resultados = await Promise.all(
-        usos.map(async (u) => ({
-          type: "tool_result" as const,
-          tool_use_id: u.id,
-          content: JSON.stringify(
-            await ejecutarHerramienta(
-              u.name ?? "",
-              (u.input ?? {}) as Record<string, unknown>,
-              token,
-            ),
-          ),
-        })),
+        usos.map(async (u) => {
+          const datos = await ejecutarHerramienta(
+            u.name ?? "",
+            (u.input ?? {}) as Record<string, unknown>,
+            token,
+          );
+          if (VISUALIZABLES.has(u.name ?? "")) {
+            visual = { tipo: u.name ?? "", datos };
+          }
+          return {
+            type: "tool_result" as const,
+            tool_use_id: u.id,
+            content: JSON.stringify(datos),
+          };
+        }),
       );
       historial.push({ role: "user", content: resultados });
     }

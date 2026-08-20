@@ -45,7 +45,10 @@ const TODAS: Herramienta[] = [
     input_schema: {
       type: "object",
       properties: {
-        market: { type: "string", description: "Nombre exacto del mercado, ej. CARIBEMAR" },
+        market: {
+          type: "string",
+          description: "Nombre exacto del mercado, ej. CARIBEMAR",
+        },
         tension_level: { type: "integer", description: "1, 2 o 3. Default 1" },
         rate_type: {
           type: "string",
@@ -62,7 +65,10 @@ const TODAS: Herramienta[] = [
     input_schema: {
       type: "object",
       properties: {
-        mes: { type: "string", description: "YYYY-MM. Sin esto, el último mes cerrado" },
+        mes: {
+          type: "string",
+          description: "YYYY-MM. Sin esto, el último mes cerrado",
+        },
         market_type: {
           type: "string",
           description: "regulated, non_regulated o both. Default both",
@@ -79,7 +85,10 @@ const TODAS: Herramienta[] = [
       properties: {
         from: { type: "string", description: "YYYY-MM-DD" },
         to: { type: "string", description: "YYYY-MM-DD" },
-        name: { type: "string", description: "Un embalse concreto, ej. GUAVIO" },
+        name: {
+          type: "string",
+          description: "Un embalse concreto, ej. GUAVIO",
+        },
       },
     },
   },
@@ -130,7 +139,8 @@ export const ejecutarHerramienta = async (
   token: string | undefined,
 ): Promise<unknown> => {
   const ruta = RUTAS[nombre];
-  if (ruta === undefined) return { error: `herramienta desconocida: ${nombre}` };
+  if (ruta === undefined)
+    return { error: `herramienta desconocida: ${nombre}` };
 
   const query = new URLSearchParams();
   for (const [k, v] of Object.entries(input)) {

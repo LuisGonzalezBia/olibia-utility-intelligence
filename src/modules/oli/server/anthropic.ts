@@ -27,7 +27,13 @@ export interface Herramienta {
 }
 
 export interface RespuestaAnthropic {
-  content: { type: string; text?: string; id?: string; name?: string; input?: unknown }[];
+  content: {
+    type: string;
+    text?: string;
+    id?: string;
+    name?: string;
+    input?: unknown;
+  }[];
   stop_reason: string | null;
 }
 
@@ -64,7 +70,11 @@ export const llamarAOli = async (
     // Se propaga el status pero NO el cuerpo al usuario: puede contener
     // fragmentos del prompt.
     const detalle = await res.text();
-    console.error("[oli] Anthropic respondió", res.status, detalle.slice(0, 400));
+    console.error(
+      "[oli] Anthropic respondió",
+      res.status,
+      detalle.slice(0, 400),
+    );
     throw new Error(`anthropic ${res.status}`);
   }
   return (await res.json()) as RespuestaAnthropic;

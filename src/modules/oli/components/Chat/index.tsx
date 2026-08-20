@@ -4,10 +4,14 @@ import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { FancyButton, Input } from "@biaenergy/ui";
 import { Oli } from "@/modules/shell/components/Oli";
+import { Markdown } from "./markdown";
+import { VisualRanking } from "./VisualRanking";
 
 interface Turno {
   quien: "yo" | "oli";
   texto: string;
+  /** Consulta con forma conocida, para dibujarla en vez de leerla. */
+  visual?: { tipo: string; datos: unknown } | null;
 }
 
 interface ChatOliProps {
@@ -48,12 +52,23 @@ export const ChatOli = ({ sugerencias, conSesion }: ChatOliProps) => {
         }),
       });
 
-      const data = (await res.json()) as { respuesta?: string; error?: string };
+      const data = (await res.json()) as {
+        respuesta?: string;
+        error?: string;
+        visual?: { tipo: string; datos: unknown } | null;
+      };
       if (!res.ok) {
         setError(data.error ?? "No pude responder en este momento.");
         return;
       }
-      setTurnos([...conMiTurno, { quien: "oli", texto: data.respuesta ?? "" }]);
+      setTurnos([
+        ...conMiTurno,
+        {
+          quien: "oli",
+          texto: data.respuesta ?? "",
+          visual: data.visual ?? null,
+        },
+      ]);
     } catch {
       setError("No pudimos conectarnos. Prueba de nuevo en un momento.");
     } finally {
@@ -80,15 +95,19 @@ export const ChatOli = ({ sugerencias, conSesion }: ChatOliProps) => {
               className={t.quien === "yo" ? "flex justify-end" : "flex gap-3"}
             >
               {t.quien === "oli" && <Oli className="mt-0.5" />}
-              <div
-                className={
-                  t.quien === "yo"
-                    ? "bg-bg-weak-50 text-paragraph-sm text-text-strong-950 max-w-[80%] rounded-2xl px-4 py-2.5"
-                    : "text-paragraph-sm text-text-strong-950 max-w-[80%] whitespace-pre-wrap"
-                }
-              >
-                {t.texto}
-              </div>
+              {t.quien === "yo" ? (
+                <div className="bg-bg-weak-50 text-paragraph-sm text-text-strong-950 max-w-[80%] rounded-2xl px-4 py-2.5">
+                  {t.texto}
+                </div>
+              ) : (
+                <div className="text-paragraph-sm text-text-strong-950 flex max-w-[85%] flex-col gap-3">
+                  {/* La gráfica primero: es lo que se lee de un vistazo. */}
+                  {t.visual?.tipo === "ranking_de_tarifas" && (
+                    <VisualRanking datos={t.visual.datos as never} />
+                  )}
+                  <Markdown texto={t.texto} />
+                </div>
+              )}
             </li>
           ))}
           {pensando && (
@@ -135,7 +154,10 @@ export const ChatOli = ({ sugerencias, conSesion }: ChatOliProps) => {
             />
           </Input.Wrapper>
         </Input.Root>
-        <FancyButton.Root type="submit" disabled={pensando || texto.trim() === ""}>
+        <FancyButton.Root
+          type="submit"
+          disabled={pensando || texto.trim() === ""}
+        >
           Preguntar
         </FancyButton.Root>
       </form>

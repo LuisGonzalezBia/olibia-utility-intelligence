@@ -62,9 +62,9 @@ const HomePage = async () => {
 
         {/* Honestidad de datos, igual que en el resto del producto. */}
         <p className="text-paragraph-xs text-text-soft-400 border-stroke-soft-200 mt-6 max-w-2xl border-t pt-6 text-center">
-          El mercado mayorista —precio de bolsa, demanda, generación y
-          embalses— viene de XM. Las tarifas las publica cada comercializador y
-          cada operador de red por metodología CREG.
+          El mercado mayorista —precio de bolsa, demanda, generación y embalses—
+          viene de XM. Las tarifas las publica cada comercializador y cada
+          operador de red por metodología CREG.
         </p>
       </main>
     </>
