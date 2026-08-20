@@ -1,5 +1,6 @@
 import { VisualRanking } from "./VisualRanking";
 import { VisualSerie } from "./VisualSerie";
+import { VisualMulti, type SerieGrafica } from "./VisualMulti";
 
 /**
  * Elige qué dibujar según la herramienta que usó Oli.
@@ -39,17 +40,67 @@ export const Visual = ({ tipo, datos }: { tipo: string; datos: unknown }) => {
     );
   }
 
+  if (tipo === "crecimiento_de_la_demanda") {
+    const d = datos as {
+      meses?: {
+        mes: string;
+        gwh?: number | null;
+        gwh_anio_anterior?: number | null;
+      }[];
+    };
+    const meses = d.meses ?? [];
+    const series: SerieGrafica[] = [
+      {
+        nombre: "Demanda",
+        puntos: meses
+          .filter((m) => typeof m.gwh === "number")
+          .map((m) => ({ fecha: m.mes.slice(5), valor: m.gwh! })),
+      },
+      {
+        // La referencia es el mismo mes del año pasado: la comparación que
+        // hace legible el crecimiento sin tener que leer los porcentajes.
+        nombre: "Año anterior",
+        referencia: true,
+        puntos: meses
+          .filter((m) => typeof m.gwh_anio_anterior === "number")
+          .map((m) => ({ fecha: m.mes.slice(5), valor: m.gwh_anio_anterior! })),
+      },
+    ];
+    return (
+      <VisualMulti
+        titulo="Demanda del SIN y crecimiento interanual"
+        subtitulo="Cada mes contra el mismo mes del año anterior"
+        unidad="GWh"
+        series={series}
+        fuente="XM"
+      />
+    );
+  }
+
   if (tipo === "precio_de_bolsa") {
     const d = datos as { days?: { date: string; avg_pbna?: number }[] };
     const puntos = (d.days ?? [])
       .filter((p) => typeof p.avg_pbna === "number")
       .map((p) => ({ fecha: dia(p.date), valor: p.avg_pbna! }));
+    if (puntos.length < 2) return null;
+
+    // El promedio del período como línea de referencia, igual que el layout de
+    // mercado: un precio sin su promedio no dice si está caro o barato.
+    const promedio = puntos.reduce((s, p) => s + p.valor, 0) / puntos.length;
+    const series: SerieGrafica[] = [
+      { nombre: "Precio de bolsa", puntos },
+      {
+        nombre: `Promedio del período (${Math.round(promedio)})`,
+        referencia: true,
+        puntos: puntos.map((p) => ({ fecha: p.fecha, valor: promedio })),
+      },
+    ];
     return (
-      <VisualSerie
+      <VisualMulti
         titulo="Precio de bolsa"
-        subtitulo="Promedio diario"
+        subtitulo="Promedio diario contra el promedio del período"
         unidad="COP/kWh"
-        puntos={puntos}
+        series={series}
         fuente="XM"
       />
     );

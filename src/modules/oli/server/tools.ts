@@ -103,9 +103,15 @@ const TODAS: Herramienta[] = [
     input_schema: {
       type: "object",
       properties: {
-        from: { type: "string", description: "YYYY-MM. Default: 24 meses atrás" },
+        from: {
+          type: "string",
+          description: "YYYY-MM. Default: 24 meses atrás",
+        },
         to: { type: "string", description: "YYYY-MM" },
-        agent_id: { type: "integer", description: "Agente XM. Sin esto, todo el SIN" },
+        agent_id: {
+          type: "integer",
+          description: "Agente XM. Sin esto, todo el SIN",
+        },
       },
     },
   },
