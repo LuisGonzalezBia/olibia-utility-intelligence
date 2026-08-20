@@ -50,12 +50,14 @@ el token no queda en la imagen publicada.
 
 ## 3. Environment variables
 
+Solo una, mas el secreto de abajo:
+
 ```env
-NODE_ENV=production
-PORT=3000
-HOSTNAME=0.0.0.0
 BACKEND_URL=https://olibia.bia.app
 ```
+
+`NODE_ENV`, `PORT` y `HOSTNAME` **no van aca**: ya quedan fijadas dentro de la
+imagen (ver el Dockerfile). Repetirlas no rompe nada, pero es ruido.
 
 `BACKEND_URL` es **solo el origen**. El resto de la ruta
 (`/ms-bia-growth-status/public-ms/utility-intelligence`) la agrega
