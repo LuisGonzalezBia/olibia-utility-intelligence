@@ -29,6 +29,7 @@ const ALCANCE: Record<string, Alcance> = {
   nivel_de_embalses: "agregada",
   precio_de_bolsa: "agregada",
   demanda_del_sistema: "agregada",
+  crecimiento_de_la_demanda: "agregada",
   bolsa_horaria: "por_empresa",
   generacion_por_empresa: "por_empresa",
   ranking_de_tarifas: "por_empresa",
@@ -92,6 +93,19 @@ const TODAS: Herramienta[] = [
           description: "YYYY-MM-DD. Default: 90 días atrás",
         },
         to: { type: "string", description: "YYYY-MM-DD" },
+      },
+    },
+  },
+  {
+    name: "crecimiento_de_la_demanda",
+    description:
+      "Demanda mensual con su variación INTERANUAL ya calculada (yoy_pct). Es la respuesta a '¿cuánto está creciendo la demanda?'. Úsala en vez de demanda_del_sistema cuando pregunten por crecimiento o tendencia: esa devuelve la serie cruda y tendrías que restar tú.\nLa comparación es contra el MISMO mes del año anterior, nunca contra el mes previo: la demanda tiene estacionalidad fuerte. Sin agent_id es el SIN completo. Fuente: XM.",
+    input_schema: {
+      type: "object",
+      properties: {
+        from: { type: "string", description: "YYYY-MM. Default: 24 meses atrás" },
+        to: { type: "string", description: "YYYY-MM" },
+        agent_id: { type: "integer", description: "Agente XM. Sin esto, todo el SIN" },
       },
     },
   },
@@ -186,6 +200,7 @@ const RUTAS: Record<string, string> = {
   hidrologia_del_sistema: "/hidrologia",
   precio_de_bolsa: "/precio-bolsa",
   demanda_del_sistema: "/demanda",
+  crecimiento_de_la_demanda: "/demanda-yoy",
   bolsa_horaria: "/bolsa-horaria",
   ranking_de_tarifas: "/ranking",
   compras_en_bolsa_y_cobertura: "/bolsa",
