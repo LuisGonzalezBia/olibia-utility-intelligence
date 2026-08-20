@@ -1,72 +1,73 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { FancyButton } from "@biaenergy/ui";
-import { defaultLocale } from "@/i18n/config";
+import { Button, FancyButton } from "@biaenergy/ui";
 import { getCurrentUser } from "@/auth/currentUser";
-import { getHomeDict } from "@/modules/home/dictionaries";
+import { Oli, OliNombre } from "@/modules/shell/components/Oli";
+import { ChatOli } from "@/modules/oli/components/Chat";
+
+/**
+ * La portada es un tablero, no un folleto.
+ *
+ * Quien llega ve datos reales del mercado y puede preguntarle a Oli sobre lo
+ * que está viendo, sin cuenta. Cuando la pregunta se vuelve sobre SU empresa,
+ * Oli mismo lo invita a registrarse — el registro aparece después de haber
+ * mostrado valor, no antes de dejar ver nada.
+ *
+ * Es lo contrario a una landing que promete: acá el usuario comprueba de qué
+ * es capaz Oli antes de dar un correo.
+ */
+const SUGERENCIAS = [
+  "¿Cómo van los embalses del país?",
+  "¿Qué pasó con el precio de bolsa este mes?",
+  "¿Quién generó más energía la semana pasada?",
+  "¿Cómo está mi empresa frente a su mercado?",
+] as const;
 
 const HomePage = async () => {
-  // Con sesión abierta, la portada de venta ya no aplica: se va derecho al
-  // producto. Sin esto, quien acababa de verificar su cuenta volvía a ver
-  // "Crear cuenta" y no tenía idea de que ya estaba adentro.
-  if ((await getCurrentUser()) !== null) redirect("/mercado");
-
-  const dict = getHomeDict(defaultLocale);
+  // Con sesión no tiene sentido la portada de entrada: va derecho a Oli.
+  if ((await getCurrentUser()) !== null) redirect("/chat");
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col justify-center px-6 py-16">
-      <p className="text-subheading-xs text-text-soft-400 mb-4 uppercase">
-        {dict.eyebrow}
-      </p>
+    <>
+      <header className="border-stroke-soft-200 bg-bg-white-0 border-b">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-6">
+          <span className="text-label-md text-text-strong-950">
+            Olibia Utility Intelligence
+          </span>
+          <div className="flex items-center gap-2">
+            <Button.Root asChild variant="neutral" mode="ghost" size="xsmall">
+              <Link href="/ingresar">Ingresar</Link>
+            </Button.Root>
+            <FancyButton.Root asChild size="xsmall">
+              <Link href="/registro">Crear cuenta</Link>
+            </FancyButton.Root>
+          </div>
+        </div>
+      </header>
 
-      <h1 className="text-title-h3 text-text-strong-950 max-w-2xl text-balance">
-        {dict.title}
-      </h1>
+      <main className="mx-auto flex max-w-3xl flex-col items-center gap-8 px-6 py-14">
+        <Oli size="lg" />
 
-      {/* Lead en negrita + resto, mismo patrón que el hero de la landing. */}
-      <p className="text-paragraph-lg text-text-sub-600 mt-4 max-w-xl">
-        <strong className="text-text-strong-950 font-medium">
-          {dict.descriptionLead}
-        </strong>{" "}
-        {dict.description}
-      </p>
+        <div className="flex flex-col items-center gap-3 text-center">
+          <h1 className="text-title-h3 text-text-strong-950 text-balance">
+            Hola, soy <OliNombre />. ¿Qué quieres saber del mercado eléctrico?
+          </h1>
+          <p className="text-paragraph-lg text-text-sub-600 max-w-xl">
+            Precio de bolsa, embalses, generación y tarifas de Colombia.
+            Pregúntame sin crear cuenta.
+          </p>
+        </div>
 
-      {/* Una sola acción primaria: el registro es el gate del producto. */}
-      <div className="mt-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-        <FancyButton.Root asChild size="medium" className="w-full sm:w-auto">
-          <Link href="/registro">{dict.cta}</Link>
-        </FancyButton.Root>
-        <span className="text-paragraph-xs text-text-soft-400">
-          {dict.ctaHint}
-        </span>
-      </div>
+        <ChatOli sugerencias={SUGERENCIAS} conSesion={false} />
 
-      <p className="text-paragraph-sm text-text-sub-600 mt-4">
-        {dict.alreadyHaveAccount}{" "}
-        <Link href="/ingresar" className="text-text-strong-950 underline">
-          {dict.signIn}
-        </Link>
-      </p>
-
-      <ul className="border-stroke-soft-200 mt-14 grid gap-8 border-t pt-10 sm:grid-cols-3">
-        {dict.features.map((feature) => (
-          <li key={feature.title} className="flex flex-col gap-1.5">
-            <h2 className="text-label-md text-text-strong-950">
-              {feature.title}
-            </h2>
-            <p className="text-paragraph-sm text-text-sub-600">
-              {feature.description}
-            </p>
-          </li>
-        ))}
-      </ul>
-
-      {/* Honestidad de datos como principio de primer orden del producto: qué es
-          dato público y qué es cálculo nuestro, dicho de entrada. */}
-      <p className="text-paragraph-xs text-text-soft-400 mt-12 max-w-2xl">
-        {dict.dataNote}
-      </p>
-    </main>
+        {/* Honestidad de datos, igual que en el resto del producto. */}
+        <p className="text-paragraph-xs text-text-soft-400 border-stroke-soft-200 mt-6 max-w-2xl border-t pt-6 text-center">
+          El mercado mayorista —precio de bolsa, demanda, generación y
+          embalses— viene de XM. Las tarifas las publica cada comercializador y
+          cada operador de red por metodología CREG.
+        </p>
+      </main>
+    </>
   );
 };
 
