@@ -50,8 +50,10 @@ export const VisualRanking = ({
       </figcaption>
 
       <ul className="flex flex-col gap-2">
-        {items.map((f) => (
-          <li key={f.provider} className="flex flex-col gap-1">
+        {items.map((f, i) => (
+          // La key lleva la posición además del nombre: el backend ya deduplica, pero
+          // si vuelve a colarse un agente repetido, React no debe romperse por eso.
+          <li key={`${f.provider}-${i}`} className="flex flex-col gap-1">
             <div className="flex items-baseline justify-between gap-3">
               <span className="text-paragraph-sm text-text-strong-950 truncate">
                 {nombreLegible(f.provider ?? "")}

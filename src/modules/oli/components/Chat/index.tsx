@@ -114,7 +114,7 @@ export const ChatOli = ({ sugerencias, conSesion }: ChatOliProps) => {
             <li className="flex gap-3">
               <Oli className="mt-0.5" />
               <span className="text-paragraph-sm text-text-soft-400">
-                Oli está mirando los datos…
+                Estoy mirando los datos…
               </span>
             </li>
           )}

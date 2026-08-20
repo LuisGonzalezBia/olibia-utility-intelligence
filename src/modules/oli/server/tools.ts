@@ -25,6 +25,7 @@ type Alcance = "agregada" | "por_empresa";
 
 const ALCANCE: Record<string, Alcance> = {
   mercados_disponibles: "agregada",
+  hidrologia_del_sistema: "agregada",
   nivel_de_embalses: "agregada",
   generacion_por_empresa: "por_empresa",
   ranking_de_tarifas: "por_empresa",
@@ -77,6 +78,18 @@ const TODAS: Herramienta[] = [
     },
   },
   {
+    name: "hidrologia_del_sistema",
+    description:
+      "Nivel de embalses y aportes hídricos AGREGADOS del SIN, día por día. Es la respuesta a '¿cómo van los embalses?' — para eso NO uses nivel_de_embalses, que da los 24 por separado. El porcentaje viene como fracción (0.79 = 79%). Fuente: XM.",
+    input_schema: {
+      type: "object",
+      properties: {
+        from: { type: "string", description: "YYYY-MM-DD" },
+        to: { type: "string", description: "YYYY-MM-DD" },
+      },
+    },
+  },
+  {
     name: "nivel_de_embalses",
     description:
       "Nivel de volumen útil por EMBALSE (24 embalses), no el agregado del sistema. El porcentaje viene como fracción y puede pasar de 1. El nombre del embalse NO es el de su dueño.",
@@ -120,6 +133,7 @@ export const herramientasPara = (conSesion: boolean): Herramienta[] =>
 
 const RUTAS: Record<string, string> = {
   mercados_disponibles: "/mercados",
+  hidrologia_del_sistema: "/hidrologia",
   ranking_de_tarifas: "/ranking",
   compras_en_bolsa_y_cobertura: "/bolsa",
   nivel_de_embalses: "/embalses",
