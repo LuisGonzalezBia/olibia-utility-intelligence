@@ -13,9 +13,15 @@ import { Oli } from "../Oli";
  * El chat va primero a propósito: es donde queremos que la gente empiece, no
  * un anexo de los tableros.
  */
+/**
+ * Dos secciones, no tres.
+ *
+ * "Mi mercado" era una ruta suelta y en realidad es un REPORTE —el de
+ * competitividad— así que vive en Reportes y se alcanza también preguntándole
+ * a Oli. Tenerlo en la barra lo hacía ver como una herramienta aparte.
+ */
 const RUTAS = [
   { href: "/chat", label: "Preguntar" },
-  { href: "/mercado", label: "Mi mercado" },
   { href: "/reportes", label: "Reportes" },
 ] as const;
 

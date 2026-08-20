@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button, FancyButton } from "@biaenergy/ui";
 import { getCurrentUser } from "@/auth/currentUser";
 import { Oli, OliNombre } from "@/modules/shell/components/Oli";
@@ -24,8 +23,12 @@ const SUGERENCIAS = [
 ] as const;
 
 const HomePage = async () => {
-  // Con sesión no tiene sentido la portada de entrada: va derecho a Oli.
-  if ((await getCurrentUser()) !== null) redirect("/chat");
+  // La portada NO redirige aunque haya sesión.
+  //
+  // Antes mandaba directo a /chat y el resultado fue que la página de inicio
+  // era invisible para cualquiera que ya hubiera entrado una vez — incluidos
+  // nosotros revisándola. Es la cara del producto: tiene que poder verse.
+  const user = await getCurrentUser();
 
   return (
     <>
@@ -34,14 +37,20 @@ const HomePage = async () => {
           <span className="text-label-md text-text-strong-950">
             Olibia Utility Intelligence
           </span>
-          <div className="flex items-center gap-2">
-            <Button.Root asChild variant="neutral" mode="ghost" size="xsmall">
-              <Link href="/ingresar">Ingresar</Link>
-            </Button.Root>
+          {user === null ? (
+            <div className="flex items-center gap-2">
+              <Button.Root asChild variant="neutral" mode="ghost" size="xsmall">
+                <Link href="/ingresar">Ingresar</Link>
+              </Button.Root>
+              <FancyButton.Root asChild size="xsmall">
+                <Link href="/registro">Crear cuenta</Link>
+              </FancyButton.Root>
+            </div>
+          ) : (
             <FancyButton.Root asChild size="xsmall">
-              <Link href="/registro">Crear cuenta</Link>
+              <Link href="/chat">Entrar a Oli</Link>
             </FancyButton.Root>
-          </div>
+          )}
         </div>
       </header>
 
@@ -58,7 +67,7 @@ const HomePage = async () => {
           </p>
         </div>
 
-        <ChatOli sugerencias={SUGERENCIAS} conSesion={false} />
+        <ChatOli sugerencias={SUGERENCIAS} conSesion={user !== null} />
 
         {/* Honestidad de datos, igual que en el resto del producto. */}
         <p className="text-paragraph-xs text-text-soft-400 border-stroke-soft-200 mt-6 max-w-2xl border-t pt-6 text-center">

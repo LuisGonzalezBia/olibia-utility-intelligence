@@ -27,6 +27,9 @@ const ALCANCE: Record<string, Alcance> = {
   mercados_disponibles: "agregada",
   hidrologia_del_sistema: "agregada",
   nivel_de_embalses: "agregada",
+  precio_de_bolsa: "agregada",
+  demanda_del_sistema: "agregada",
+  bolsa_horaria: "por_empresa",
   generacion_por_empresa: "por_empresa",
   ranking_de_tarifas: "por_empresa",
   compras_en_bolsa_y_cobertura: "por_empresa",
@@ -75,6 +78,53 @@ const TODAS: Herramienta[] = [
           description: "regulated, non_regulated o both. Default both",
         },
       },
+    },
+  },
+  {
+    name: "precio_de_bolsa",
+    description:
+      "Precio de bolsa diario del SIN: mínimo, promedio y máximo por día, en COP/kWh. Es la serie para '¿cómo va el precio?' o '¿por qué subió esta semana?'. Fuente: XM.",
+    input_schema: {
+      type: "object",
+      properties: {
+        from: {
+          type: "string",
+          description: "YYYY-MM-DD. Default: 90 días atrás",
+        },
+        to: { type: "string", description: "YYYY-MM-DD" },
+      },
+    },
+  },
+  {
+    name: "demanda_del_sistema",
+    description:
+      "Demanda mensual en GWh, separada en regulada y no regulada. Con `agent_id` es la de ese agente; sin él, la del SIN. Fuente: XM.",
+    input_schema: {
+      type: "object",
+      properties: {
+        month: { type: "string", description: "YYYY-MM" },
+        agent_id: {
+          type: "integer",
+          description: "Agente XM. Sin esto, todo el SIN",
+        },
+      },
+    },
+  },
+  {
+    name: "bolsa_horaria",
+    description:
+      "Compras y ventas en bolsa hora por hora de UN agente, para un mes. Sirve para ver en qué franjas se está exponiendo al spot. Requiere agent_id. Fuente: liquidación de XM.",
+    input_schema: {
+      type: "object",
+      properties: {
+        month: { type: "string", description: "YYYY-MM" },
+        agent_id: { type: "integer", description: "Agente XM" },
+        market_type: {
+          type: "string",
+          description: "regulated | non_regulated | both",
+        },
+      },
+      required: ["month"],
     },
   },
   {
@@ -134,6 +184,9 @@ export const herramientasPara = (conSesion: boolean): Herramienta[] =>
 const RUTAS: Record<string, string> = {
   mercados_disponibles: "/mercados",
   hidrologia_del_sistema: "/hidrologia",
+  precio_de_bolsa: "/precio-bolsa",
+  demanda_del_sistema: "/demanda",
+  bolsa_horaria: "/bolsa-horaria",
   ranking_de_tarifas: "/ranking",
   compras_en_bolsa_y_cobertura: "/bolsa",
   nivel_de_embalses: "/embalses",

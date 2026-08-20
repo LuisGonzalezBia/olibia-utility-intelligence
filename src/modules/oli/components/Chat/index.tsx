@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FancyButton, Input } from "@biaenergy/ui";
 import { Oli } from "@/modules/shell/components/Oli";
 import { Markdown } from "./markdown";
-import { VisualRanking } from "./VisualRanking";
+import { Visual } from "./Visual";
 
 interface Turno {
   quien: "yo" | "oli";
@@ -102,8 +102,8 @@ export const ChatOli = ({ sugerencias, conSesion }: ChatOliProps) => {
               ) : (
                 <div className="text-paragraph-sm text-text-strong-950 flex max-w-[85%] flex-col gap-3">
                   {/* La gráfica primero: es lo que se lee de un vistazo. */}
-                  {t.visual?.tipo === "ranking_de_tarifas" && (
-                    <VisualRanking datos={t.visual.datos as never} />
+                  {t.visual != null && (
+                    <Visual tipo={t.visual.tipo} datos={t.visual.datos} />
                   )}
                   <Markdown texto={t.texto} />
                 </div>
