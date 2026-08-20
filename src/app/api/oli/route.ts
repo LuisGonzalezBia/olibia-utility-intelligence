@@ -7,8 +7,8 @@ import {
 } from "@/modules/oli/server/anthropic";
 import { SYSTEM_OLI, SYSTEM_OLI_ANONIMO } from "@/modules/oli/server/prompt";
 import {
-  HERRAMIENTAS,
   ejecutarHerramienta,
+  herramientasPara,
 } from "@/modules/oli/server/tools";
 
 /**
@@ -58,13 +58,15 @@ export async function POST(request: Request) {
   }
 
   const token = await getSessionToken();
-  const system = token === undefined ? SYSTEM_OLI_ANONIMO : SYSTEM_OLI;
+  const conSesion = token !== undefined;
+  const system = conSesion ? SYSTEM_OLI : SYSTEM_OLI_ANONIMO;
+  const herramientas = herramientasPara(conSesion);
 
   const historial: Mensaje[] = [...mensajes];
 
   try {
     for (let vuelta = 0; vuelta < MAX_VUELTAS; vuelta += 1) {
-      const respuesta = await llamarAOli(system, historial, HERRAMIENTAS);
+      const respuesta = await llamarAOli(system, historial, herramientas);
 
       const usos = respuesta.content.filter((c) => c.type === "tool_use");
       if (usos.length === 0) {

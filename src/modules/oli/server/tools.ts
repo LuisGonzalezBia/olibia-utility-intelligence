@@ -12,7 +12,26 @@ import type { Herramienta } from "./anthropic";
  *
  * Ninguna toca schemas internos de Bia: solo mercado.
  */
-export const HERRAMIENTAS: Herramienta[] = [
+/**
+ * Qué herramientas ve Oli según quién pregunta.
+ *
+ * `agregada` = dato del sistema, sin nombre propio de nadie: embalses,
+ * generación del país. `por_empresa` = ranking de tarifas, compras en bolsa y
+ * cobertura con razón social — eso solo detrás de sesión, porque publicar el
+ * desempeño de una empresa con nombre propio y sin login es otra cosa que
+ * mostrar el nivel de un embalse.
+ */
+type Alcance = "agregada" | "por_empresa";
+
+const ALCANCE: Record<string, Alcance> = {
+  mercados_disponibles: "agregada",
+  nivel_de_embalses: "agregada",
+  generacion_por_empresa: "por_empresa",
+  ranking_de_tarifas: "por_empresa",
+  compras_en_bolsa_y_cobertura: "por_empresa",
+};
+
+const TODAS: Herramienta[] = [
   {
     name: "mercados_disponibles",
     description:
@@ -78,6 +97,17 @@ export const HERRAMIENTAS: Herramienta[] = [
     },
   },
 ];
+
+/**
+ * Sin sesión Oli no recibe las herramientas por empresa.
+ *
+ * No es solo una decisión de producto: hoy esos endpoints exigen sesión y
+ * devolverían 401. Dárselas igual haría que Oli las intente, falle y se
+ * disculpe — peor experiencia que no ofrecerlas y explicar de entrada qué
+ * necesita una cuenta.
+ */
+export const herramientasPara = (conSesion: boolean): Herramienta[] =>
+  conSesion ? TODAS : TODAS.filter((h) => ALCANCE[h.name] === "agregada");
 
 const RUTAS: Record<string, string> = {
   mercados_disponibles: "/mercados",
