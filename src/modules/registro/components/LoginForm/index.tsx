@@ -103,7 +103,7 @@ export const LoginForm = () => {
         </Input.Root>
       </FormField>
 
-      <FancyButton.Root type="submit" disabled={isSubmitting} className="mt-2">
+      <FancyButton.Root variant="primary" type="submit" disabled={isSubmitting} className="mt-2">
         {isSubmitting ? "Ingresando…" : "Ingresar"}
       </FancyButton.Root>
     </form>

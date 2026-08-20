@@ -35,3 +35,15 @@ export const leerPropiedad = (raw: string | undefined): string | undefined => {
   const rt = raw.toUpperCase();
   return rt in PROPIEDAD ? rt : undefined;
 };
+
+/**
+ * Formatea un COP/kWh que puede no haber llegado.
+ *
+ * Un dato ausente se muestra como "—", nunca como NaN: NaN parece un valor
+ * calculado y hace dudar del resto de la tabla, mientras que una raya dice
+ * "esto no vino" sin ambigüedad.
+ */
+export const formatearCU = (
+  valor: number | null,
+  pesos: Intl.NumberFormat,
+): string => (valor === null ? "—" : pesos.format(valor));

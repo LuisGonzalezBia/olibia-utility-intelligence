@@ -68,7 +68,7 @@ export const VerificarCuenta = ({ token }: VerificarCuentaProps) => {
         <p className="text-paragraph-sm text-text-sub-600">
           Ya puedes ver la información de tu mercado.
         </p>
-        <FancyButton.Root asChild>
+        <FancyButton.Root variant="primary" asChild>
           <Link href="/mercado">Ver mi mercado</Link>
         </FancyButton.Root>
       </div>
@@ -97,7 +97,7 @@ export const VerificarCuenta = ({ token }: VerificarCuentaProps) => {
         Los enlaces de activación duran 24 horas y se usan una sola vez. Si ya
         activaste tu cuenta, ingresa con tu correo y contraseña.
       </p>
-      <FancyButton.Root asChild>
+      <FancyButton.Root variant="primary" asChild>
         <Link href="/ingresar">Ingresar</Link>
       </FancyButton.Root>
     </div>

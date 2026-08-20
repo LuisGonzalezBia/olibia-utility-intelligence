@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @import '@biaenergy/ui/styles.css';
+/* Después del DS: reasigna sus tokens a la paleta de Olibia. Ver el archivo. */
+@import './olibia-theme.css';
 
 /* Permite que Tailwind v4 escanee las clases que usa @biaenergy/ui — sin esto
    los componentes del DS salen sin estilos. */
