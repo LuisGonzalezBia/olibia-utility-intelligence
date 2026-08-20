@@ -40,6 +40,35 @@ export const Visual = ({ tipo, datos }: { tipo: string; datos: unknown }) => {
     );
   }
 
+  if (tipo === "fase_enso") {
+    const d = datos as { monthly?: { mes: string; oni?: number | null }[] };
+    const puntos = (d.monthly ?? [])
+      .filter((m) => typeof m.oni === "number")
+      .slice(-24)
+      .map((m) => ({ fecha: m.mes.slice(2), valor: m.oni! }));
+    if (puntos.length < 2) return null;
+
+    // Los dos umbrales de NOAA como referencia: sin ellos un 0.46 y un 0.95
+    // se ven parecidos, y uno es neutral y el otro es El Niño.
+    const series: SerieGrafica[] = [
+      { nombre: "ONI", puntos },
+      {
+        nombre: "Umbral El Niño (+0.5)",
+        referencia: true,
+        puntos: puntos.map((p) => ({ fecha: p.fecha, valor: 0.5 })),
+      },
+    ];
+    return (
+      <VisualMulti
+        titulo="Fase ENSO — índice ONI"
+        subtitulo="Escala real. Sobre +0.5 es El Niño; bajo −0.5, La Niña"
+        unidad="ONI"
+        series={series}
+        fuente="NOAA vía XM"
+      />
+    );
+  }
+
   if (tipo === "crecimiento_de_la_demanda") {
     const d = datos as {
       meses?: {

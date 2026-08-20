@@ -26,6 +26,7 @@ type Alcance = "agregada" | "por_empresa";
 const ALCANCE: Record<string, Alcance> = {
   mercados_disponibles: "agregada",
   hidrologia_del_sistema: "agregada",
+  fase_enso: "agregada",
   nivel_de_embalses: "agregada",
   precio_de_bolsa: "agregada",
   demanda_del_sistema: "agregada",
@@ -148,6 +149,12 @@ const TODAS: Herramienta[] = [
     },
   },
   {
+    name: "fase_enso",
+    description:
+      "Fase ENSO (El Niño / La Niña) con el ONI mensual en su ESCALA REAL: va de −2 a +2 aproximadamente. Umbral NOAA: ≥ +0.5 es El Niño, ≤ −0.5 La Niña, en medio neutral.\nNUNCA multipliques el ONI para graficarlo junto al nivel de embalse: son magnitudes distintas y forzarlas al mismo eje hace parecer que una sigue a la otra. Si te piden compararlas, describe la relación con palabras o pide dos gráficas.\nEl pronóstico que trae es el boletín público de NOAA, no una proyección de Bia.",
+    input_schema: { type: "object", properties: {} },
+  },
+  {
     name: "hidrologia_del_sistema",
     description:
       "Nivel de embalses y aportes hídricos AGREGADOS del SIN, día por día. Es la respuesta a '¿cómo van los embalses?' — para eso NO uses nivel_de_embalses, que da los 24 por separado. El porcentaje viene como fracción (0.79 = 79%). Fuente: XM.",
@@ -204,6 +211,7 @@ export const herramientasPara = (conSesion: boolean): Herramienta[] =>
 const RUTAS: Record<string, string> = {
   mercados_disponibles: "/mercados",
   hidrologia_del_sistema: "/hidrologia",
+  fase_enso: "/enso",
   precio_de_bolsa: "/precio-bolsa",
   demanda_del_sistema: "/demanda",
   crecimiento_de_la_demanda: "/demanda-yoy",
