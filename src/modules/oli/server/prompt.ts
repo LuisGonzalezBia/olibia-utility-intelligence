@@ -11,6 +11,51 @@ import "server-only";
  * sector leyendo cifras de sus competidores, y una atribución mal hecha tiene
  * consecuencias para un tercero.
  */
+/**
+ * Contexto de la conversación: hoy y con quién habla.
+ *
+ * Sin la fecha, Oli no sabe qué es "esta semana" ni "el mes pasado" y termina
+ * pidiendo rangos que el usuario no debería tener que dar. Sin la empresa,
+ * pregunta en qué mercado está alguien que ya nos lo dijo al registrarse — que
+ * es lo que más rápido hace sentir que el producto no te conoce.
+ */
+export const contextoDe = (
+  user: {
+    empresa_nombre?: string;
+    gold_provider?: string | null;
+    actividad?: string | null;
+  } | null,
+): string => {
+  const hoy = new Intl.DateTimeFormat("es-CO", {
+    dateStyle: "full",
+    timeZone: "America/Bogota",
+  }).format(new Date());
+
+  if (user === null) return `\n\nHoy es ${hoy} (hora de Bogotá).`;
+
+  const partes = [`Hoy es ${hoy} (hora de Bogotá).`];
+  if (user.empresa_nombre) {
+    partes.push(`Hablas con alguien de ${user.empresa_nombre}.`);
+  }
+  if (user.gold_provider) {
+    // El nombre con el que aparece en los datos: sin esto Oli no puede
+    // encontrar su fila en un ranking aunque tenga la empresa.
+    partes.push(
+      `En los datos de tarifas su empresa figura como "${user.gold_provider}" — úsalo para ubicarla y NO le preguntes cómo se llama.`,
+    );
+  }
+  if (user.actividad) {
+    partes.push(
+      `Su actividad es ${user.actividad}. Un comercializador no genera energía: si preguntan por su generación y no hay datos, probablemente sea porque no genera, no porque falle el servicio.`,
+    );
+  }
+  partes.push(
+    "No le preguntes en qué mercado está si puedes deducirlo de sus datos; si compite en varios, muéstrale uno y ofrécele los otros.",
+  );
+
+  return `\n\n${partes.join(" ")}`;
+};
+
 export const SYSTEM_OLI = `Eres Oli, el analista de mercado de Olibia Utility Intelligence.
 
 Hablas con agentes del sector energético colombiano. NO son empleados de Bia.
@@ -38,6 +83,8 @@ REGLAS DE DATOS — no negociables:
 5. El nombre de un embalse NO es el de su dueño: Topocoro es el embalse de Sogamoso (Isagen), Peñol el de Guatapé (EPM).
 6. Solo datos realizados y tendencias. NUNCA proyecciones: quien pregunta puede ser un competidor.
 7. Si no tienes el dato, dilo en una frase. No estimes.
+8. Si una consulta falla, NO le eches la culpa a XM ni a ninguna fuente: no sabes de quién es la falla. Di "no pude traer el dato" y ya. Atribuir un error a un tercero es tan grave como atribuirle un dato.
+9. La generación es de plantas. Un comercializador puro no genera: si no aparece, di eso, no que falló el servicio.
 
 GRÁFICAS — sí puedes mostrarlas:
 La interfaz dibuja automáticamente el resultado de tus consultas de ranking de tarifas y de compras en bolsa. No digas que no puedes hacer gráficos: consulta el dato y la gráfica aparece. Tu texto acompaña, no describe la tabla.

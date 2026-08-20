@@ -5,7 +5,12 @@ import {
   llamarAOli,
   type Mensaje,
 } from "@/modules/oli/server/anthropic";
-import { SYSTEM_OLI, SYSTEM_OLI_ANONIMO } from "@/modules/oli/server/prompt";
+import {
+  SYSTEM_OLI,
+  SYSTEM_OLI_ANONIMO,
+  contextoDe,
+} from "@/modules/oli/server/prompt";
+import { getCurrentUser } from "@/auth/currentUser";
 import {
   ejecutarHerramienta,
   herramientasPara,
@@ -73,7 +78,11 @@ export async function POST(request: Request) {
 
   const token = await getSessionToken();
   const conSesion = token !== undefined;
-  const system = conSesion ? SYSTEM_OLI : SYSTEM_OLI_ANONIMO;
+  // La fecha y la identidad van en el system, no en el historial: así no se
+  // pierden cuando la conversación se recorta.
+  const user = conSesion ? await getCurrentUser() : null;
+  const system =
+    (conSesion ? SYSTEM_OLI : SYSTEM_OLI_ANONIMO) + contextoDe(user);
   const herramientas = herramientasPara(conSesion);
 
   const historial: Mensaje[] = [...mensajes];
