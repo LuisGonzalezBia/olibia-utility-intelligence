@@ -18,7 +18,10 @@ interface CtaOlibiaProps {
   accion?: string;
 }
 
-const AGENDA = "https://olibia.bia.app/demo";
+// La WEB de Olibia, no el gateway de API. `olibia.bia.app` es el gateway: al
+// abrirlo en el navegador contesta 400 "authorization header is empty", que fue
+// exactamente lo que veía quien apretaba "Ver cómo".
+const AGENDA = "https://web-olibia.bia.app/landing";
 
 export const CtaOlibia = ({ variante = "tarjeta", accion }: CtaOlibiaProps) => {
   if (variante === "tarjeta") {
