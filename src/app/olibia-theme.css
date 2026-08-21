@@ -1,4 +1,123 @@
 /**
+ * Utility Intelligence se ve claro, siempre.
+ *
+ * El design system flippea a oscuro solo, con un `@media (prefers-color-scheme:
+ * dark)` sobre `:root` — o sea que el tema lo decidía el sistema operativo de
+ * quien entra. A quien lo tuviera en oscuro le salía una versión que nadie
+ * diseñó ni revisó: el hover de los botones secundarios quedaba blanco sobre
+ * blanco y el registro se volvía ilegible.
+ *
+ * `class="light"` en el <html> NO alcanza: la clase `.light` existe en el DS
+ * pero no define un solo token de color. Lo único que funciona es reafirmar,
+ * dentro del mismo media query, los 90 tokens que el DS invierte, con sus
+ * valores claros. Al ir después en el orden de fuente y con igual
+ * especificidad, ganan.
+ *
+ * La lista está generada a partir de `tokens.css` — son exactamente los tokens
+ * que el DS toca en oscuro y sus valores claros de la misma versión. Si el DS
+ * sube de versión y agrega tokens al bloque oscuro, hay que regenerarla; el
+ * síntoma sería un color suelto que se oscurece cuando el sistema está en
+ * oscuro.
+ *
+ * El día que queramos modo oscuro de verdad, se diseña, se revisa y se borra
+ * este bloque.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-fancy-button-shine: var(--color-static-white);
+    --color-fancy-ring-neutral: #242628;
+    --color-fancy-ring-primary: var(--color-primary-base);
+    --color-fancy-drop-neutral: #1b1c1d7a;
+    --color-fancy-drop-primary: #0e121b3d;
+    --color-fancy-bg-basic: var(--color-static-white);
+    --color-fancy-text-basic: var(--color-static-black);
+    --color-fancy-ring-basic: var(--color-neutral-200);
+    --color-fancy-drop-basic: transparent;
+    --color-bg-strong-950: var(--color-neutral-950);
+    --color-bg-surface-800: var(--color-neutral-800);
+    --color-bg-sub-300: var(--color-neutral-300);
+    --color-bg-soft-200: var(--color-neutral-200);
+    --color-bg-weak-50: var(--color-neutral-50);
+    --color-bg-weak-25: var(--color-neutral-50);
+    --color-bg-white-0: var(--color-neutral-0);
+    --color-bg-titled-frame: var(--color-neutral-50);
+    --color-text-strong-950: var(--color-neutral-950);
+    --color-text-sub-600: var(--color-neutral-600);
+    --color-text-soft-400: var(--color-neutral-400);
+    --color-text-disabled-300: var(--color-neutral-300);
+    --color-text-white-0: var(--color-neutral-0);
+    --color-stroke-strong-950: var(--color-neutral-950);
+    --color-stroke-sub-300: var(--color-neutral-300);
+    --color-stroke-soft-200: var(--color-neutral-200);
+    --color-stroke-white-0: var(--color-neutral-0);
+    --color-faded-dark: var(--color-neutral-800);
+    --color-faded-base: var(--color-neutral-500);
+    --color-faded-light: var(--color-neutral-200);
+    --color-faded-lighter: var(--color-neutral-100);
+    --color-information-dark: var(--color-gray-950);
+    --color-information-base: var(--color-gray-500);
+    --color-information-light: var(--color-gray-200);
+    --color-information-lighter: var(--color-gray-50);
+    --color-warning-dark: var(--color-orange-950);
+    --color-warning-base: var(--color-orange-500);
+    --color-warning-light: var(--color-orange-200);
+    --color-warning-lighter: var(--color-orange-50);
+    --color-error-dark: var(--color-red-950);
+    --color-error-base: var(--color-red-500);
+    --color-error-light: var(--color-red-200);
+    --color-error-lighter: var(--color-red-50);
+    --color-success-dark: var(--color-green-950);
+    --color-success-base: var(--color-green-500);
+    --color-success-light: var(--color-green-200);
+    --color-success-lighter: var(--color-green-50);
+    --color-away-dark: var(--color-yellow-950);
+    --color-away-base: var(--color-yellow-500);
+    --color-away-light: var(--color-yellow-200);
+    --color-away-lighter: var(--color-yellow-50);
+    --color-feature-dark: var(--color-purple-950);
+    --color-feature-base: var(--color-purple-500);
+    --color-feature-light: var(--color-purple-200);
+    --color-feature-lighter: var(--color-purple-50);
+    --color-verified-dark: var(--color-sky-950);
+    --color-verified-base: var(--color-sky-500);
+    --color-verified-light: var(--color-sky-200);
+    --color-verified-lighter: var(--color-sky-50);
+    --color-highlighted-dark: var(--color-pink-950);
+    --color-highlighted-base: var(--color-pink-500);
+    --color-highlighted-light: var(--color-pink-200);
+    --color-highlighted-lighter: var(--color-pink-50);
+    --color-stable-dark: var(--color-teal-950);
+    --color-stable-base: var(--color-teal-500);
+    --color-stable-light: var(--color-teal-200);
+    --color-stable-lighter: var(--color-teal-50);
+    --color-brand-base: var(--color-teal-400);
+    --color-brand-hover: var(--color-teal-700);
+    --color-brand-focus: var(--color-teal-700);
+    --color-chart-1: var(--color-brand-base);
+    --color-chart-2: var(--color-blue-500);
+    --color-chart-3: var(--color-orange-500);
+    --color-chart-4: var(--color-purple-500);
+    --color-chart-5: var(--color-yellow-500);
+    --color-primary-base: var(--color-gray-950);
+    --color-primary-darker: var(--color-gray-900);
+    --color-primary-dark: var(--color-gray-950);
+    --color-primary-light: var(--color-gray-100);
+    --color-primary-lighter: var(--color-gray-50);
+    --color-primary-alpha-10: var(--color-black-alpha-10);
+    --color-overlay-gray: #3333333d;
+    --color-overlay-slate: #2b303b3d;
+    --color-overlay: var(--color-overlay-gray);
+    --color-social-apple: #000000;
+    --color-social-twitter: #010101;
+    --color-social-github: #24292f;
+    --color-social-notion: #1e2226;
+    --color-social-tidal: #000000;
+    --color-social-amazon: #353e47;
+    --color-social-zendesk: #16140d;
+  }
+}
+
+/**
  * Tema Olibia sobre @biaenergy/ui.
  *
  * El design system es el de Bia: su marca es teal y su `primary` es
